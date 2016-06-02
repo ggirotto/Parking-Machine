@@ -1,31 +1,32 @@
 package Dominio;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Ticket {
-    private final int serial;
+    private final String serial;
     private final double valorPago;
-    private final LocalTime chegada;
-    private LocalTime saida;
-    private final int parqId;
+    private final LocalDateTime chegada;
+    private final LocalDateTime saida;
+    private final String parqId;
     private final String parqAddres;
     private int SERIAL_CONT = 0;
     
-    public Ticket(double value, LocalTime saida, int newParqId, String newParqAddres){
-        serial = SERIAL_CONT;
+    public Ticket(double value, LocalDateTime newChegada, LocalDateTime newSaida, String newParqId, String newParqAddres){
+        serial = SERIAL_CONT+"";
         SERIAL_CONT++;
         valorPago = value;
-        chegada = LocalTime.now();
+        chegada = newChegada;
+        saida = newSaida;
         parqId = newParqId;
         parqAddres = newParqAddres;
     }
     
-    public int getSerial(){ return serial; }
+    public String getSerial(){ return serial; }
     public double getValorPago(){ return valorPago; }
-    public LocalTime getChegada(){ return chegada; }
-    public LocalTime getSaida(){ return saida; }
-    public int getParqId(){ return parqId; }
+    public LocalDateTime getChegada(){ return chegada; }
+    public LocalDateTime getSaida(){ return saida; }
+    public String getParqId(){ return parqId; }
     public String getParqAddres(){ return parqAddres; }
     public Date getData(){ return new Date(); }
     

@@ -18,7 +18,6 @@ public class Parquimetro {
     private final double valorMinimo = 0.75;
     private final double valorMaximo = 3.0;
     private final double valorIncremento = 0.25;
-    private double valorPago;
     
     
     public Parquimetro(String newId, String newAddres) throws ParquimetroDAOException{
@@ -27,6 +26,9 @@ public class Parquimetro {
         addres = newAddres;
     }
     
+    /*
+        gera o ticket com as informações fornecidas
+    */
     public void geraTicket(LocalTime saida, double valorPago){
         
     }
@@ -41,7 +43,7 @@ public class Parquimetro {
     /*
         Retorna a diferença de tempo em minutos entre a chegada e a hora de saida
     */
-    private int diferencaTempo(LocalTime saida){
+    private int diferencaTempo(LocalTime primeiro, LocalTime segundo){
         return -1;
     }
     
@@ -54,7 +56,7 @@ public class Parquimetro {
     
     public String getIdentification(){ return identification; }
     public String getAddres(){ return addres; }
-    public List getTickets(){ return tickets; }
+    public List<Ticket> getTickets(){ return tickets; }
     
 
 }
