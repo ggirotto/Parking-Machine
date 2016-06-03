@@ -1,19 +1,19 @@
 package Dominio;
 
+import java.util.HashMap;
 
-public class CartaoRecarregavel implements IPagamento{
-    private String identificacao;
+public class CoinCollector implements IPagamento{
     private double saldo;
-    
+    private final HashMap<EnumCoin, Integer> listaMoedas = new HashMap<>();
+
     @Override
-    public void desconta(double valor) throws PagamentoException{
-        if(saldo<valor) throw new PagamentoException("Saldo Insuficiente");
-        saldo -= valor;
+    public void desconta(double valor) throws PagamentoException {
+        
     }
 
     @Override
     public void deposita(double valor) {
-        saldo += valor;
+        
     }
 
     @Override
@@ -25,4 +25,5 @@ public class CartaoRecarregavel implements IPagamento{
     public double getTroco(double valor) {
         return 0;
     }
+
 }
