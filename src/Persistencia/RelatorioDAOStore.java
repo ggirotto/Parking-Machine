@@ -12,23 +12,17 @@ import java.util.List;
 
 public class RelatorioDAOStore implements RelatorioDAO{
     
-    private File tickets;
-    private File pagamentos;
+    private File arquivo;
     
-    public File getInstanceTickets(){
-        if(tickets == null) tickets = new File("tickets.txt");
-        return tickets;
-    }
-    
-    public File getInstancePagamentos(){
-        if(pagamentos == null) pagamentos = new File("pagamentos.txt");
-        return pagamentos;
+    public File getInstance(){
+        if(arquivo == null) arquivo = new File("relatorio.txt");
+        return arquivo;
     }
     
     @Override
     public List buscarTodosTickets() throws RelatorioDAOException {
         List<Ticket> resultado = null;
-        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(tickets))){
+        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(arquivo))){
             resultado = (ArrayList<Ticket>)ois.readObject();
             return resultado;
         } catch(Exception e) {
@@ -44,7 +38,7 @@ public class RelatorioDAOStore implements RelatorioDAO{
     @Override
     public List buscarTodosPagamentos() throws RelatorioDAOException {
         List<IPagamento> resultado = null;
-        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(pagamentos))){
+        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(arquivo))){
             resultado = (ArrayList<IPagamento>)ois.readObject();
             return resultado;
         } catch(Exception e) {

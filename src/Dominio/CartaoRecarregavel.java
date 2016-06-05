@@ -2,8 +2,12 @@ package Dominio;
 
 
 public class CartaoRecarregavel implements IPagamento{
-    private String identificacao;
+    private final String identificacao;
     private double saldo;
+    
+    public CartaoRecarregavel(String id){
+        identificacao = id;
+    }
     
     @Override
     public void desconta(double valor) throws PagamentoException{
