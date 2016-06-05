@@ -75,9 +75,7 @@ public class Parquimetro {
         Verifca se o parquimetro está tarifando no horário atual
     */
     private boolean isTarifying(){
-        LocalDateTime chegada = LocalDateTime.now();
-        if(chegada.isAfter(inicioTarifa) && chegada.isBefore(fimTarifa)) return true;
-        return false;
+        return LocalDateTime.now().isAfter(inicioTarifa) && LocalDateTime.now().isBefore(fimTarifa);
     }
     
     public String getIdentificacao(){ return identificacao; }
