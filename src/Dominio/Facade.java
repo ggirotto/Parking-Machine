@@ -1,45 +1,50 @@
 package Dominio;
 
-import java.time.LocalDateTime;
-import Persistencia.*;
-import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class Facade {
     private final IPagamento pagamento;
     private final Parquimetro parquimetro;
-    private final RelatorioDAOStore relatorio;
     private final LocalDateTime saida;
-    private final double valorPago;
     
-    public Facade(IPagamento ip,LocalDateTime saida,double valorPago){
+    public Facade(IPagamento ip,LocalDateTime saida){
         pagamento = ip;
         this.saida = saida;
         parquimetro = Parquimetro.getInstance();
-        File arq = new File("relatorio.txt");
-        relatorio = new RelatorioDAOStore(arq);
-        this.valorPago = valorPago;
     }
     
-    public void geraTicket() throws Exception{
-        registraPagamento();
+    /*
+        Gera e imprime o ticket
+    */
+    public void geraTicket(double valorPago) throws Exception{
+        registraPagamento(valorPago);
         Ticket t = parquimetro.geraTicket(saida);
-        geraRelatorio(t);
     }
     
-    public void registraPagamento() throws PagamentoException{
+    /*
+        Adiciona o tipo de pagamento na instancia do parquimetro;
+        Se o pagamento for através de moedas, verifica:
+        - Se o valor pago é maior ou igual ao valor necessário
+        - Se for, verifica se é maior, se for devolve o troco
+        Se for através de cartão, somente desconta o valor do saldo do cartão
+        (se o saldo for insuficiente, é tratado no método desconta da classe cartao)
+    */
+    public void registraPagamento(double valorPago) throws PagamentoException{
         parquimetro.pagamentoEfetuado(pagamento);
         if(pagamento instanceof CoinCollector){
             double valorNecessario = parquimetro.calculaValor(saida);
             if(!(valorPago >= valorNecessario)) throw new PagamentoException("Valor Insuficiente");
-            double saldo = pagamento.getSaldo();
             if(valorPago > valorNecessario) System.out.println("Troco: " + pagamento.getTroco(valorPago - valorNecessario));
         }
         else
             pagamento.desconta(parquimetro.calculaValor(saida));
     }
     
-    private void geraRelatorio(Ticket t) throws RelatorioDAOException, IOException{
-        relatorio.armazenaTicket(t,pagamento);
+    /*
+        Gera o log do parquimetro com todas as informações necessárias
+    */
+    public void geraLogParquimetro() throws IOException,RelatorioDAOException{
+        parquimetro.geraLogParquimetro();
     }
 }

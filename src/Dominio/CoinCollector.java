@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 public class CoinCollector implements IPagamento{
     private double saldo;
+    private int nroMoedas = 0;
     private final String tipo = "Pagamento em moedas";
     private final HashMap<EnumCoin, Integer> listaMoedas = new HashMap<>();
     private static CoinCollector coinMachine = null;
@@ -16,23 +17,84 @@ public class CoinCollector implements IPagamento{
     @Override
     public void desconta(double valor) throws PagamentoException {
         
-    }
-
-    @Override
-    public void deposita(double valor) throws PagamentoException{
         EnumCoin enumerador = null;
+        /*
+            Busca um enumerador que possua valor igual à variável valor
+        */
         for(EnumCoin entry : EnumCoin.values()){
-            if(entry.getValue() == valor){
+            if(entry.getValor() == valor){
                 enumerador = entry;
                 break;
             }
         }
+        
+        /*
+            Se não achou, não existe moeda com este valor
+        */
         if(enumerador == null) throw new PagamentoException("Moeda inválida");
+        
+        /*
+            Se achou porém ela não existe na lista de moedas, ela é válida
+            porém não existe nenhuma moeda deste valor na máquina de moedas do
+            parquimetro
+        */
+        if(listaMoedas.get(enumerador) == null) throw new PagamentoException("Moeda inexsistente na máquina");
+        else
+            /*
+                Se achou e existe na lista, retira uma unidade dela
+            */
+            listaMoedas.put(enumerador, listaMoedas.get(enumerador)-1);
+        /*
+            Retira o valor dela do saldo da máquina e decrementa o número
+            de moedas em 1
+        */
+        saldo-=valor;
+        nroMoedas--;
+        
+    }
+
+    @Override
+    public void deposita(double valor) throws PagamentoException{
+        
+        EnumCoin enumerador = null;
+        
+        /*
+            Busca um enumerador que possua valor igual à variável valor
+        */
+        for(EnumCoin entry : EnumCoin.values()){
+            if(entry.getValor() == valor){
+                enumerador = entry;
+                break;
+            }
+        }
+        
+        /*
+            Se não achou, não existe moeda com este valor
+        */
+        if(enumerador == null) throw new PagamentoException("Moeda inválida");
+        
+        /*
+            Se achou porém ela não existe na lista de moedas, ela é válida
+            porém não existe nenhuma moeda deste valor na máquina de moedas do
+            parquimetro
+        */
         if(listaMoedas.get(enumerador) == null)
+            /*
+                Adiciona uma moeda deste valor na máquina
+            */
             listaMoedas.put(enumerador, 1);
         else
+            /*
+                Se achou e exsite na máquina, incrementa a quantidade desta
+                moeda na máquian em 1
+            */
             listaMoedas.put(enumerador, listaMoedas.get(enumerador)+1);
+        
+        /*
+            Aumenta o saldo com o valor da moeda e incrementa o número de moedas.
+        */
         saldo+=valor;
+        nroMoedas++;
     }
 
     @Override
@@ -40,9 +102,14 @@ public class CoinCollector implements IPagamento{
         return saldo;
     }
     
-    //TODO
+    /*
+        Retira o valor da variável -valor- da máquina de moedas.
+        Começa retirando das maiores para as menores.
+        Se a máquina não possui moedas suficientes, retira o maior
+        valor possível menor que a variável -valor-
+    */
     @Override
-    public double getTroco(double valor) throws PagamentoException {
+    public double getTroco(double valor) {
         
         EnumCoin aux = EnumCoin.UMREAL;
         double troco = 0;
@@ -85,7 +152,6 @@ public class CoinCollector implements IPagamento{
             if(valor>0) break;
         }
         
-        if(valor>0) throw new PagamentoException("Moedas Insuficientes");
         return troco;
     }
 
@@ -96,5 +162,6 @@ public class CoinCollector implements IPagamento{
     
     @Override
     public void zeraSaldo(){ saldo = 0; }
-
+    
+    public int getNroMoedas(){ return nroMoedas; }
 }

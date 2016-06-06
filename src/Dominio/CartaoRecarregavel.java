@@ -3,11 +3,14 @@ package Dominio;
 import java.util.Random;
 
 public class CartaoRecarregavel implements IPagamento{
-    private final String tipo = "Cartão recarregável";
     private String identificacao = "";
     private double saldo;
+    private final String tipo = "Cartão recarregável";
     
     public CartaoRecarregavel(){
+        /*
+            Cria uma identificacao aleatória de 128 caracteres para o cartão
+        */
         Random randomGenerator = new Random();
         for(int i=0; i<128; i++)
             identificacao += randomGenerator.nextInt(9);
