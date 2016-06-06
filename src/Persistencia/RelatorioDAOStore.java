@@ -6,17 +6,18 @@ import Dominio.RelatorioDAOException;
 import Dominio.Ticket;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RelatorioDAOStore implements RelatorioDAO{
     
-    private File arquivo;
+    private final File arquivo;
     
-    public File getInstance(){
-        if(arquivo == null) arquivo = new File("relatorio.txt");
-        return arquivo;
+    public RelatorioDAOStore(File arq){
+        arquivo = arq;
     }
     
     @Override
@@ -47,8 +48,20 @@ public class RelatorioDAOStore implements RelatorioDAO{
     }
 
     @Override
-    public void armazenaTicket(Ticket t) throws RelatorioDAOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void armazenaTicket(Ticket t, IPagamento p) throws RelatorioDAOException, IOException{
+        FileWriter writer = new FileWriter(arquivo);
+        
+        writer.write("\n-----");
+        writer.write("\nTicket número: " + t.getSerial());
+        writer.write("\nIdentificação do Parquimetro: " + t.getParqId());
+        writer.write("\nEndereço do Parquimetro: " + t.getParqAddres());
+        writer.write("\nMétodo de pagamento: " + p.getTipo());
+        writer.write("\nHora de Chegada: " + t.getChegada().toString());
+        writer.write("\nHora de Saída: " + t.getSaida().toString());
+        writer.write("\nValor Pago: " + t.getValorPago());
+        writer.write("\n-----");
+        writer.close();
+        
     }
 
     @Override

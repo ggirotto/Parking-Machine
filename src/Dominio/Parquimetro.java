@@ -3,6 +3,7 @@ package Dominio;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.util.List;
 
 
@@ -35,21 +36,21 @@ public class Parquimetro {
     */
     public Ticket geraTicket(LocalDateTime saida) throws Exception{
         Ticket t;
-        if(isTarifying()){
-            LocalDateTime chegada = LocalDateTime.now();
+        //if(isTarifying()){
+            LocalDateTime chegada = LocalDateTime.of(2016, Month.JUNE, 3, 12, 00);
             boolean verificaPagamento = verificaValorPago(diferencaTempo(chegada,saida));
+            tempoEstadia(saida);
             if(!verificaPagamento) throw new PagamentoException("Valor pago insuficiente");
             t = new Ticket(totalPago,saida,identificacao,endereco);
-        } else throw new ParquimetroException("O parquimetro não está operando");
+        // else throw new ParquimetroException("O parquimetro não está operando");
         return t;
     }
     
     /*
         Registra o valor e o tipo de pagamento realziado no parquimetro
     */
-    public void pagamentoEfetuado(IPagamento tipo, double valor){
+    public void pagamentoEfetuado(IPagamento tipo){
         pagamento = tipo;
-        totalPago = valor;
     }
     
     /*
@@ -63,6 +64,26 @@ public class Parquimetro {
         return valorInicial <= totalPago;
     }
     
+    /*
+        Calcula o valor a ser pago a partir do tempo de estadia
+    */
+    public double calculaValor(LocalDateTime saida){
+        LocalDateTime chegada = LocalDateTime.of(2016, Month.JUNE, 3, 12, 00);
+        int diferencaTempo = diferencaTempo(chegada,saida);
+        double valorInicial = valorMinimo;
+        int diferenca = (diferencaTempo - 30)/10;
+        valorInicial += valorIncremento*diferenca;
+        totalPago = valorInicial;
+        return valorInicial;
+    }
+    /*
+        Verifica se o tempo de permanencia está entre os limites mínimo e máximo
+    */
+    private void tempoEstadia(LocalDateTime saida) throws ParquimetroException{
+        int diferencaTempo = diferencaTempo(LocalDateTime.of(2016, Month.JUNE, 3, 12, 00), saida);
+        if(diferencaTempo > 120) throw new ParquimetroException("Tempo de estadia além do tempo máximo");
+        if(diferencaTempo < 30) throw new ParquimetroException("Tempo de estadia menor do que o tempo minimo");
+    }
     /*
         Retorna a diferença de tempo em minutos entre a chegada e a hora de saida
     */

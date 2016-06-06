@@ -2,6 +2,7 @@ package Dominio;
 
 
 public class CartaoRecarregavel implements IPagamento{
+    private final String tipo = "Cartão recarregável";
     private final String identificacao;
     private double saldo;
     
@@ -16,7 +17,7 @@ public class CartaoRecarregavel implements IPagamento{
     }
 
     @Override
-    public void deposita(double valor) {
+    public void deposita(double valor) throws PagamentoException{
         saldo += valor;
     }
 
@@ -28,5 +29,10 @@ public class CartaoRecarregavel implements IPagamento{
     @Override
     public double getTroco(double valor) {
         return 0;
+    }
+
+    @Override
+    public String getTipo() {
+        return tipo;
     }
 }

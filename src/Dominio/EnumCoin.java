@@ -3,15 +3,15 @@ package Dominio;
 
 public enum EnumCoin {
     
-    CINCO(5),DEZ(10),VINTECINCO(25),CINQUENTA(50),UMREAL(100);
+    CINCO(0.05),DEZ(0.1),VINTECINCO(0.25),CINQUENTA(0.5),UMREAL(1.0);
     
-    private final int value;
+    private final double value;
     
-    EnumCoin(int value){
+    EnumCoin(double value){
         this.value = value;
     }
     
-    public int getValue(){
+    public double getValue(){
         return value;
     }
 }
