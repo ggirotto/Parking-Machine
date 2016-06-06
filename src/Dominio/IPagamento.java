@@ -7,5 +7,6 @@ public interface IPagamento {
     public double getSaldo();
     public double getTroco(double valor) throws PagamentoException;
     public String getTipo();
+    public void zeraSaldo();
     
 }

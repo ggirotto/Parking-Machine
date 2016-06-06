@@ -40,4 +40,7 @@ public class CartaoRecarregavel implements IPagamento{
     public String getTipo() {
         return tipo;
     }
+    
+    @Override
+    public void zeraSaldo(){ saldo = 0; }
 }

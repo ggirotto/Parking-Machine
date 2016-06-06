@@ -58,3 +58,43 @@ Hora de Saída: 2016-06-03T13:00
 Valor Pago: 1.5
 
 
+#
+Ticket número: 00001
+Identificação do Parquimetro: 00001
+Endereço do Parquimetro: Rua da Minha Casa, 321
+Método de pagamento: Pagamento em moedas
+Hora de Chegada: 2016-06-06T14:13:25.743
+Hora de Saída: 2016-06-03T12:30
+Valor Pago: 0.75
+
+
+#
+Ticket número: 00002
+Identificação do Parquimetro: 00001
+Endereço do Parquimetro: Rua da Minha Casa, 321
+Método de pagamento: Pagamento em moedas
+Hora de Chegada: 2016-06-06T14:13:25.743
+Hora de Saída: 2016-06-03T13:00
+Valor Pago: 1.5
+
+
+#
+Ticket número: 00001
+Identificação do Parquimetro: 00001
+Endereço do Parquimetro: Rua da Minha Casa, 321
+Método de pagamento: Pagamento em moedas
+Hora de Chegada: 2016-06-06T14:24:53.167
+Hora de Saída: 2016-06-03T12:30
+Valor Pago: 0.75
+
+
+#
+Ticket número: 00002
+Identificação do Parquimetro: 00001
+Endereço do Parquimetro: Rua da Minha Casa, 321
+Método de pagamento: Pagamento em moedas
+Hora de Chegada: 2016-06-06T14:24:53.174
+Hora de Saída: 2016-06-03T13:00
+Valor Pago: 1.5
+
+
