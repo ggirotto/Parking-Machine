@@ -30,6 +30,7 @@ public class Facade {
         if(pagamento instanceof CoinCollector){
             double valorNecessario = parquimetro.calculaValor(saida);
             if(!(pagamento.getSaldo() >= valorNecessario)) throw new PagamentoException("Valor Insuficiente");
+            double saldo = pagamento.getSaldo();
             if(pagamento.getSaldo() > valorNecessario) System.out.println("Troco: " + pagamento.getTroco(pagamento.getSaldo() - valorNecessario));
         }
         else
