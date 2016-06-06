@@ -4,11 +4,13 @@ import Dominio.IPagamento;
 import Dominio.RelatorioDAO;
 import Dominio.RelatorioDAOException;
 import Dominio.Ticket;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,20 +50,22 @@ public class RelatorioDAOStore implements RelatorioDAO{
     }
 
     @Override
-    public void armazenaTicket(Ticket t, IPagamento p) throws RelatorioDAOException, IOException{
-        FileWriter writer = new FileWriter(arquivo);
+    public void armazenaTicket(Ticket t, IPagamento p) throws RelatorioDAOException{
+        try(FileWriter writer = new FileWriter(arquivo, true);
+        BufferedWriter bw = new BufferedWriter(writer);
+        PrintWriter out = new PrintWriter(bw)){
         
-        writer.write("\n-----");
-        writer.write("\nTicket número: " + t.getSerial());
-        writer.write("\nIdentificação do Parquimetro: " + t.getParqId());
-        writer.write("\nEndereço do Parquimetro: " + t.getParqAddres());
-        writer.write("\nMétodo de pagamento: " + p.getTipo());
-        writer.write("\nHora de Chegada: " + t.getChegada().toString());
-        writer.write("\nHora de Saída: " + t.getSaida().toString());
-        writer.write("\nValor Pago: " + t.getValorPago());
-        writer.write("\n-----");
-        writer.close();
-        
+            out.println("#");
+            out.println("Ticket número: " + t.getSerial());
+            out.println("Identificação do Parquimetro: " + t.getParqId());
+            out.println("Endereço do Parquimetro: " + t.getParqAddres());
+            out.println("Método de pagamento: " + p.getTipo());
+            out.println("Hora de Chegada: " + t.getChegada().toString());
+            out.println("Hora de Saída: " + t.getSaida().toString());
+            out.println("Valor Pago: " + t.getValorPago());
+            out.println("\n");
+        }
+        catch (IOException e){}
     }
 
     @Override

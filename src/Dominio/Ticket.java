@@ -9,7 +9,7 @@ public class Ticket {
     private final LocalDateTime saida;
     private final String parqId;
     private final String parqAddres;
-    private int SERIAL_CONT = 0;
+    private static int SERIAL_CONT = 0;
     
     public Ticket(double value, LocalDateTime newSaida, String newParqId, String newParqAddres){
         serial = calculaSerial();
@@ -22,7 +22,8 @@ public class Ticket {
     
     private String calculaSerial(){
         String retorno = "";
-        for(int i=0; i<=SERIAL_CONT+"".length(); i++){
+        int serialSize = (SERIAL_CONT+"").length();
+        for(int i=0; i<5-serialSize; i++){
             retorno += "0";
         }
         SERIAL_CONT++;

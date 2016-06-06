@@ -10,13 +10,15 @@ public class Facade {
     private final Parquimetro parquimetro;
     private final RelatorioDAOStore relatorio;
     private final LocalDateTime saida;
+    private final double valorPago;
     
-    public Facade(IPagamento ip,LocalDateTime saida){
+    public Facade(IPagamento ip,LocalDateTime saida,double valorPago){
         pagamento = ip;
         this.saida = saida;
         parquimetro = Parquimetro.getInstance();
         File arq = new File("relatorio.txt");
         relatorio = new RelatorioDAOStore(arq);
+        this.valorPago = valorPago;
     }
     
     public void geraTicket() throws Exception{
@@ -29,9 +31,9 @@ public class Facade {
         parquimetro.pagamentoEfetuado(pagamento);
         if(pagamento instanceof CoinCollector){
             double valorNecessario = parquimetro.calculaValor(saida);
-            if(!(pagamento.getSaldo() >= valorNecessario)) throw new PagamentoException("Valor Insuficiente");
+            if(!(valorPago >= valorNecessario)) throw new PagamentoException("Valor Insuficiente");
             double saldo = pagamento.getSaldo();
-            if(pagamento.getSaldo() > valorNecessario) System.out.println("Troco: " + pagamento.getTroco(pagamento.getSaldo() - valorNecessario));
+            if(valorPago > valorNecessario) System.out.println("Troco: " + pagamento.getTroco(valorPago - valorNecessario));
         }
         else
             pagamento.desconta(parquimetro.calculaValor(saida));
