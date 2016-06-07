@@ -1,4 +1,4 @@
-package Dominio;
+package Persistencia;
 
 
 public class RelatorioDAOException extends Exception{

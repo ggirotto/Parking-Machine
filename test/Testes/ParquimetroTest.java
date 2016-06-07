@@ -2,16 +2,17 @@ package Testes;
 
 import org.junit.*;
 import Dominio.*;
+import java.time.LocalDateTime;
 import static org.junit.Assert.assertEquals;
 
 public class ParquimetroTest {
-    private Parquimetro parq;
+    private Facade fachada;
     private CoinCollector coinMachine;
 
     @Before
     public void setUp() throws PagamentoException {
-        parq = Parquimetro.getInstance();
         coinMachine = CoinCollector.getInstance();
+        fachada = new Facade(coinMachine,LocalDateTime.now());
         coinMachine.deposita(1.0);
     }
     

@@ -5,8 +5,6 @@ import java.time.LocalDate;
 
 public class Ticket {
     private final String serial;
-    private final double valorPago;
-    private final IPagamento tipoPagamento;
     private final LocalDateTime chegada;
     private final LocalDateTime saida;
     private final String parqId;
@@ -24,8 +22,6 @@ public class Ticket {
             serialController = LocalDate.now();
         }
         serial = calculaSerial();
-        valorPago = value;
-        tipoPagamento = tipo;
         chegada = LocalDateTime.now();
         saida = newSaida;
         parqId = newParqId;
@@ -52,10 +48,8 @@ public class Ticket {
         getters
     */
     public String getSerial(){ return serial; }
-    public double getValorPago(){ return valorPago; }
     public LocalDateTime getChegada(){ return chegada; }
     public LocalDateTime getSaida(){ return saida; }
     public String getParqId(){ return parqId; }
     public String getParqAddres(){ return parqAddres; }
-    public IPagamento getTipoPagamento(){ return tipoPagamento; }
 }

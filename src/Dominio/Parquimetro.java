@@ -1,20 +1,14 @@
 package Dominio;
 
-import Persistencia.RelatorioDAOStore;
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Parquimetro {
     private final String identificacao = "00001";
     private final String endereco = "Rua da Minha Casa, 321";
-    private final List<Ticket> listaTickets = new ArrayList();
     private final LocalDateTime inicioTarifa = LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 30));
     private final LocalDateTime fimTarifa = LocalDateTime.of(LocalDate.now(), LocalTime.of(18, 30));
     private final LocalTime tempoMinimo = LocalTime.of(0, 30);
@@ -25,21 +19,16 @@ public class Parquimetro {
     private final double valorIncremento = 0.25;
     private IPagamento tipoPagamento;
     private double valorPago = 0;
-    private double totalArrecadado = 0;
-    private static Parquimetro instance = null;
+    private final AdaptadorNegocioPersistencia adapter;
     
-    private Parquimetro() {}
-    
-    public static Parquimetro getInstance(){
-        
-        if(instance == null) instance = new Parquimetro();
-        return instance;
+    public Parquimetro() {
+        adapter = new AdaptadorNegocioPersistencia();
     }
     
     /*
         Gera e imprime o ticket
     */
-    public Ticket geraTicket(LocalDateTime saida) throws Exception{
+    public Ticket geraTicket(LocalDateTime saida) throws PagamentoException, ParquimetroException{
         
         Ticket t;
         //if(isTarifying()){
@@ -49,38 +38,58 @@ public class Parquimetro {
             if(!verificaPagamento) throw new PagamentoException("Valor pago insuficiente");
             t = new Ticket(valorPago,tipoPagamento,saida,identificacao,endereco);
         // else throw new ParquimetroException("O parquimetro não está operando");
-        listaTickets.add(t);
-        imprimeTicket(t);
+        armazenaTicket(t);
         return t;
         
     }
     
     /*
-        Imprime o ticket
+        Armazena o ticket na camada de Persistencia
     */
-    public void imprimeTicket(Ticket t) throws IOException,RelatorioDAOException{
+    public void armazenaTicket(Ticket t) throws ParquimetroException {
         
-        RelatorioDAOStore ticket = new RelatorioDAOStore(new File("ticket.txt"));
-        ticket.imprimeTicket(t,tipoPagamento);
+        try{
+            
+            adapter.armazenaTicket(t, tipoPagamento, valorPago);
+            
+        }catch(Exception e) {
+            throw new ParquimetroException("Erro na hora de armazena o ticket");
+        }
         
     }
     
     /*
         Imprime o relatório do parquímetro
     */
-    public void geraLogParquimetro() throws IOException,RelatorioDAOException{
+    public void geraLogParquimetro() throws ParquimetroException {
         
-        RelatorioDAOStore logParquimetro = new RelatorioDAOStore(new File("relatorioParquimetro.txt"));
-        logParquimetro.geraRelatorioParquimetro(this);
+        try{
+            
+            adapter.geraRelatorioParquimetro();
+            
+        }catch(Exception e) {
+            throw new ParquimetroException("Erro na hora de armazena o ticket");
+        }
+        
     }
     
     /*
-        Registra o tipo de pagamento realziado no parquimetro
+        Adiciona o tipo de pagamento na instancia do parquimetro;
+        Se o pagamento for através de moedas, verifica:
+        - Se o valor pago é maior ou igual ao valor necessário
+        - Se for, verifica se é maior, se for devolve o troco
+        Se for através de cartão, somente desconta o valor do saldo do cartão
+        (se o saldo for insuficiente, é tratado no método desconta da classe cartao)
     */
-    public void pagamentoEfetuado(IPagamento tipo){
-        
-        tipoPagamento = tipo;
-        
+    public void registraPagamento(LocalDateTime saida, double valorPago, IPagamento pagamento) throws PagamentoException{
+        tipoPagamento = pagamento;
+        if(pagamento instanceof CoinCollector){
+            double valorNecessario = calculaValor(saida);
+            if(!(valorPago >= valorNecessario)) throw new PagamentoException("Valor Insuficiente");
+            if(valorPago > valorNecessario) System.out.println("Troco: " + pagamento.getTroco(valorPago - valorNecessario));
+        }
+        else
+            pagamento.desconta(calculaValor(saida));
     }
     
     /*
@@ -107,7 +116,6 @@ public class Parquimetro {
         int diferenca = (diferencaTempo - 30)/10;
         valorInicial += valorIncremento*diferenca;
         valorPago = valorInicial;
-        totalArrecadado += valorInicial;
         return valorInicial;
         
     }
@@ -145,8 +153,6 @@ public class Parquimetro {
     */
     public String getIdentificacao(){ return identificacao; }
     public String getEndereco(){ return endereco; }
-    public List<Ticket> getTickets(){ return listaTickets; }
-    public double getTotalArrecadado(){ return totalArrecadado; }
     public IPagamento getPagamento(){ return tipoPagamento; }
     
 

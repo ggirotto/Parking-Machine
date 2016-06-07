@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 public class CoinCollector implements IPagamento{
     private double saldo;
-    private int nroMoedas = 0;
     private final String tipo = "Pagamento em moedas";
     private final HashMap<EnumCoin, Integer> listaMoedas = new HashMap<>();
     private static CoinCollector coinMachine = null;
@@ -49,7 +48,6 @@ public class CoinCollector implements IPagamento{
             de moedas em 1
         */
         saldo-=valor;
-        nroMoedas--;
         
     }
 
@@ -94,7 +92,6 @@ public class CoinCollector implements IPagamento{
             Aumenta o saldo com o valor da moeda e incrementa o número de moedas.
         */
         saldo+=valor;
-        nroMoedas++;
     }
 
     @Override
@@ -162,6 +159,4 @@ public class CoinCollector implements IPagamento{
     
     @Override
     public void zeraSaldo(){ saldo = 0; }
-    
-    public int getNroMoedas(){ return nroMoedas; }
 }
