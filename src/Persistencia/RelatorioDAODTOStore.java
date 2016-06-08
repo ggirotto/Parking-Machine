@@ -14,7 +14,7 @@ public class RelatorioDAODTOStore implements RelatorioDAO{
     private final List<TicketDTO> listaTickets;
     
     public RelatorioDAODTOStore(){
-        arquivo = new File("relatorioParquimetro");
+        arquivo = new File("relatorioParquimetro.txt");
         listaTickets = new ArrayList<>();
     }
     

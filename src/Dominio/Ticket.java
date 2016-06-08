@@ -9,16 +9,16 @@ public class Ticket {
     private final LocalDateTime saida;
     private final String parqId;
     private final String parqAddres;
-    private static int SERIAL_CONT = 1;
+    private static int SERIAL_CONT = 0;
     private static LocalDate serialController = LocalDate.now();
     
-    public Ticket(double value, IPagamento tipo, LocalDateTime newSaida, String newParqId, String newParqAddres){
+    public Ticket(LocalDateTime newSaida, String newParqId, String newParqAddres){
         
         /*
             Verifica se trocou o dia, se sim, zera o número de serial
         */
-        if(LocalDate.now() != serialController){
-            SERIAL_CONT = 1;
+        if(!(serialController.equals(LocalDate.now()))){
+            SERIAL_CONT = 0;
             serialController = LocalDate.now();
         }
         serial = calculaSerial();

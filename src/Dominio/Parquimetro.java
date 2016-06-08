@@ -36,7 +36,7 @@ public class Parquimetro {
             boolean verificaPagamento = verificaValorPago(diferencaTempo(chegada,saida));
             tempoEstadia(saida);
             if(!verificaPagamento) throw new PagamentoException("Valor pago insuficiente");
-            t = new Ticket(valorPago,tipoPagamento,saida,identificacao,endereco);
+            t = new Ticket(saida,identificacao,endereco);
         // else throw new ParquimetroException("O parquimetro não está operando");
         armazenaTicket(t);
         return t;
@@ -83,6 +83,7 @@ public class Parquimetro {
     */
     public void registraPagamento(LocalDateTime saida, double valorPago, IPagamento pagamento) throws PagamentoException{
         tipoPagamento = pagamento;
+        this.valorPago = valorPago;
         if(pagamento instanceof CoinCollector){
             double valorNecessario = calculaValor(saida);
             if(!(valorPago >= valorNecessario)) throw new PagamentoException("Valor Insuficiente");
@@ -115,7 +116,6 @@ public class Parquimetro {
         double valorInicial = valorMinimo;
         int diferenca = (diferencaTempo - 30)/10;
         valorInicial += valorIncremento*diferenca;
-        valorPago = valorInicial;
         return valorInicial;
         
     }

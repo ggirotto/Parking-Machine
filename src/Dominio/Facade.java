@@ -16,9 +16,9 @@ public class Facade {
     /*
         Gera e imprime o ticket
     */
-    public void geraTicket(double valorPago) throws ParquimetroException, PagamentoException{
+    public Ticket geraTicket(double valorPago) throws ParquimetroException, PagamentoException{
         parquimetro.registraPagamento(saida, valorPago, pagamento);
-        Ticket t = parquimetro.geraTicket(saida);
+        return parquimetro.geraTicket(saida);
     }
     
     /*
