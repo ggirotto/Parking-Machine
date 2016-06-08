@@ -155,5 +155,42 @@ public class ParquimetroTest {
         
     }
     
+    @Test
+    public void simulaUsoDoCartao() throws Exception{
+        
+        CartaoRecarregavel cartao = new CartaoRecarregavel();
+        cartao.deposita(3);
+        LocalDateTime saida = LocalDateTime.now().plusMinutes(120);
+        Facade fachada = new Facade(cartao,LocalDateTime.now(),saida);
+        Ticket t = fachada.geraTicket(3);
+        assertNotNull(t);
+        assertEquals(0,cartao.getSaldo(),0.0f);
+        
+    }
+    
+    @Test(expected = PagamentoException.class)
+    public void simulaUsoDoCartaoComSaldoInsuficiente() throws Exception{
+        
+        CartaoRecarregavel cartao = new CartaoRecarregavel();
+        cartao.deposita(2);
+        LocalDateTime saida = LocalDateTime.now().plusMinutes(120);
+        Facade fachada = new Facade(cartao,LocalDateTime.now(),saida);
+        Ticket t = fachada.geraTicket(3);
+        
+    }
+    
+    @Test
+    public void simulaUsoDoCartaoComSaldoSuperior() throws Exception{
+        
+        CartaoRecarregavel cartao = new CartaoRecarregavel();
+        cartao.deposita(10);
+        LocalDateTime saida = LocalDateTime.now().plusMinutes(120);
+        Facade fachada = new Facade(cartao,LocalDateTime.now(),saida);
+        Ticket t = fachada.geraTicket(3);
+        assertNotNull(t);
+        assertEquals(7.0f,cartao.getSaldo(),0.0f);
+        
+    }
+    
     
 }
