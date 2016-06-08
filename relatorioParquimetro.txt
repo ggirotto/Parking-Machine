@@ -3,16 +3,37 @@ Identificação do Parquimetro: 00001
 Endereço do Parquimetro: Rua da Minha Casa, 321
 Tickets e informações: 
 --Ticket: 00001
-	Data de Chegada: 2016-06-08T12:45:46.265
-	Data de Saída: 2016-06-03T12:30
+	Data de Chegada: 2016-06-08T14:19:15.350
+	Data de Saída: 2016-06-08T14:49:13.400
 	Valor Pago: 0.75
 	Forma de Pagamento: Pagamento em moedas
---Ticket: 00002
-	Data de Chegada: 2016-06-08T12:45:46.267
-	Data de Saída: 2016-06-03T12:30
-	Valor Pago: 2.0
+Número de Tickets emitidos: 1
+Total Arrecadado: 0.75
+
+
+#
+Identificação do Parquimetro: 00001
+Endereço do Parquimetro: Rua da Minha Casa, 321
+Tickets e informações: 
+--Ticket: 00001
+	Data de Chegada: 2016-06-08T14:27:53.962
+	Data de Saída: 2016-06-08T14:57:52.589
+	Valor Pago: 1.0
 	Forma de Pagamento: Pagamento em moedas
-Número de Tickets emitidos: 2
-Total Arrecadado: 2.75
+Número de Tickets emitidos: 1
+Total Arrecadado: 1.0
+
+
+#
+Identificação do Parquimetro: 00001
+Endereço do Parquimetro: Rua da Minha Casa, 321
+Tickets e informações: 
+--Ticket: 00001
+	Data de Chegada: 2016-06-08T14:38:46.312
+	Data de Saída: 2016-06-08T15:28:15.380
+	Valor Pago: 1.25
+	Forma de Pagamento: Pagamento em moedas
+Número de Tickets emitidos: 1
+Total Arrecadado: 1.25
 
 

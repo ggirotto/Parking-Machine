@@ -3,17 +3,14 @@ package Testes;
 import org.junit.*;
 import Dominio.*;
 import java.time.LocalDateTime;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class ParquimetroTest {
-    private Facade fachada;
     private CoinCollector coinMachine;
 
     @Before
     public void setUp() throws PagamentoException {
         coinMachine = CoinCollector.getInstance();
-        fachada = new Facade(coinMachine,LocalDateTime.now());
-        coinMachine.deposita(1.0);
     }
     
     @After
@@ -28,7 +25,7 @@ public class ParquimetroTest {
         coinMachine.deposita(0.25);
         coinMachine.deposita(0.50);
         coinMachine.deposita(1.0);
-        assertEquals(2.90, coinMachine.getSaldo(), 0.01f);
+        assertEquals(1.9, coinMachine.getSaldo(), 0.01f);
     }
     
     @Test(expected = PagamentoException.class)
@@ -37,19 +34,126 @@ public class ParquimetroTest {
     }
 
     @Test
-    public void testGetSaldo() {
+    public void testGetSaldo() throws PagamentoException{
+        coinMachine.deposita(0.5);
+        coinMachine.deposita(0.05);
         double actual = coinMachine.getSaldo();
-        assertEquals(1.0, actual, 0.0f);
+        assertEquals(0.55, actual, 0.0f);
     }
 
     @Test
     public void testTroco() throws PagamentoException{
+        
         coinMachine.deposita(0.50);
         coinMachine.deposita(0.50);
         coinMachine.deposita(1.0);
         double troco = coinMachine.getTroco(1);
         assertEquals(1.0f, troco, 0.0f);
         double saldo = coinMachine.getSaldo();
-        assertEquals(2.0f, saldo, 0.0f);
+        assertEquals(1.0f, saldo, 0.0f);
+        
     }
+    
+    @Test
+    public void simulaTempoMinimoComValorCorreto() throws PagamentoException, ParquimetroException, TicketException{
+        
+        LocalDateTime saida = LocalDateTime.now().plusMinutes(30);
+        coinMachine.deposita(0.25);
+        coinMachine.deposita(0.25);
+        coinMachine.deposita(0.25);
+        Facade fachada = new Facade(coinMachine,LocalDateTime.now(),saida);
+        Ticket t = fachada.geraTicket(0.75);
+        assertNotNull(t);
+        assertEquals(0.75f,coinMachine.getSaldo(),0.0f);
+    }
+    
+    @Test(expected = PagamentoException.class)
+    public void simulaTempoMinimoComValorInferior() throws PagamentoException, ParquimetroException, TicketException{
+        
+        LocalDateTime saida = LocalDateTime.now().plusMinutes(30);
+        coinMachine.deposita(0.25);
+        coinMachine.deposita(0.25);
+        Facade fachada = new Facade(coinMachine,LocalDateTime.now(),saida);
+        Ticket t = fachada.geraTicket(0.50);
+    }
+    
+    @Test
+    public void simulaTempoMaximoComValorCorreto() throws PagamentoException, ParquimetroException, TicketException{
+        
+        LocalDateTime saida = LocalDateTime.now().plusMinutes(120);
+        coinMachine.deposita(1.0);
+        coinMachine.deposita(1.0);
+        coinMachine.deposita(1.0);
+        Facade fachada = new Facade(coinMachine,LocalDateTime.now(),saida);
+        Ticket t = fachada.geraTicket(3.0);
+        assertNotNull(t);
+        assertEquals(3.0f,coinMachine.getSaldo(),0.0f);
+    }
+    
+    @Test(expected = PagamentoException.class)
+    public void simulaTempoMaximoComValorInferior() throws PagamentoException, ParquimetroException, TicketException{
+        
+        LocalDateTime saida = LocalDateTime.now().plusMinutes(120);
+        coinMachine.deposita(1.0);
+        coinMachine.deposita(1.0);
+        coinMachine.deposita(0.05);
+        Facade fachada = new Facade(coinMachine,LocalDateTime.now(),saida);
+        Ticket t = fachada.geraTicket(2.95);
+    }
+    
+    @Test
+    public void simulaTempoIntermediarioComValorCorreto() throws PagamentoException, ParquimetroException, TicketException{
+        
+        LocalDateTime saida = LocalDateTime.now().plusMinutes(80);
+        coinMachine.deposita(1.0);
+        coinMachine.deposita(1.0);
+        Facade fachada = new Facade(coinMachine,LocalDateTime.now(),saida);
+        Ticket t = fachada.geraTicket(2.0);
+        assertNotNull(t);
+        assertEquals(2.0f,coinMachine.getSaldo(),0.0f);
+        
+    }
+    
+    @Test(expected = PagamentoException.class)
+    public void simulaTempoIntermediarioComValorInferior() throws PagamentoException, ParquimetroException, TicketException{
+        
+        LocalDateTime saida = LocalDateTime.now().plusMinutes(80);
+        coinMachine.deposita(1.0);
+        coinMachine.deposita(0.5);
+        Facade fachada = new Facade(coinMachine,LocalDateTime.now(),saida);
+        Ticket t = fachada.geraTicket(1.5);
+        
+    }
+    
+    @Test
+    public void simulaTrocoCorreto() throws Exception{
+        
+        // Adiciona para a máquina possuir moeda para dar de troco
+        coinMachine.deposita(0.25);
+        
+        LocalDateTime saida = LocalDateTime.now().plusMinutes(90);
+        coinMachine.deposita(1.0);
+        coinMachine.deposita(1.0);
+        coinMachine.deposita(0.5);
+        Facade fachada = new Facade(coinMachine,LocalDateTime.now(),saida);
+        Ticket t = fachada.geraTicket(2.5);
+        assertNotNull(t);
+        assertEquals(2.50f,coinMachine.getSaldo(),0.0f);
+    }
+    
+    @Test
+    public void simulaTrocoComMaquinaSemMoedas() throws Exception{
+        
+        LocalDateTime saida = LocalDateTime.now().plusMinutes(90);
+        coinMachine.deposita(1.0);
+        coinMachine.deposita(1.0);
+        coinMachine.deposita(0.5);
+        Facade fachada = new Facade(coinMachine,LocalDateTime.now(),saida);
+        Ticket t = fachada.geraTicket(2.5);
+        assertNotNull(t);
+        assertEquals(2.50f,coinMachine.getSaldo(),0.0f);
+        
+    }
+    
+    
 }

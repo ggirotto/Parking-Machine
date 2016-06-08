@@ -12,7 +12,7 @@ public class Ticket {
     private static int SERIAL_CONT = 0;
     private static LocalDate serialController = LocalDate.now();
     
-    public Ticket(LocalDateTime newSaida, String newParqId, String newParqAddres){
+    public Ticket(LocalDateTime newSaida, String newParqId, String newParqAddres) throws TicketException{
         
         /*
             Verifica se trocou o dia, se sim, zera o número de serial
@@ -32,7 +32,7 @@ public class Ticket {
     /*
         Calcula o número de serial do ticket atual
     */
-    private String calculaSerial(){
+    private String calculaSerial() throws TicketException{
         
         String retorno = "";
         int serialSize = (SERIAL_CONT+"").length();
@@ -40,6 +40,7 @@ public class Ticket {
             retorno += "0";
         }
         SERIAL_CONT++;
+        if(SERIAL_CONT > 99999) throw new TicketException("Número máximo de tickets diários atingido");
         return retorno+SERIAL_CONT;
         
     }

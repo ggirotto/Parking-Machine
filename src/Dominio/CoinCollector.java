@@ -158,5 +158,8 @@ public class CoinCollector implements IPagamento{
     }
     
     @Override
-    public void zeraSaldo(){ saldo = 0; }
+    public void zeraSaldo(){ 
+        saldo = 0;
+        listaMoedas.clear();
+    }
 }

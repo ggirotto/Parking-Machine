@@ -3,7 +3,6 @@ package Dominio;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
 
 
 public class Parquimetro {
@@ -18,7 +17,7 @@ public class Parquimetro {
     private final double valorMaximo = 3.0;
     private final double valorIncremento = 0.25;
     private IPagamento tipoPagamento;
-    private double valorPago = 0;
+    private static double valorPago = 0;
     private final AdaptadorNegocioPersistencia adapter;
     
     public Parquimetro() {
@@ -28,17 +27,18 @@ public class Parquimetro {
     /*
         Gera e imprime o ticket
     */
-    public Ticket geraTicket(LocalDateTime saida) throws PagamentoException, ParquimetroException{
+    public Ticket geraTicket(LocalDateTime chegada, LocalDateTime saida)
+                            throws PagamentoException, ParquimetroException, TicketException{
         
         Ticket t;
-        //if(isTarifying()){
-            LocalDateTime chegada = LocalDateTime.of(2016, Month.JUNE, 3, 12, 00);
+        if(isTarifying()){
             boolean verificaPagamento = verificaValorPago(diferencaTempo(chegada,saida));
-            tempoEstadia(saida);
+            tempoEstadia(chegada, saida);
             if(!verificaPagamento) throw new PagamentoException("Valor pago insuficiente");
             t = new Ticket(saida,identificacao,endereco);
-        // else throw new ParquimetroException("O parquimetro não está operando");
+        } else throw new ParquimetroException("O parquimetro não está operando");
         armazenaTicket(t);
+        valorPago = 0;
         return t;
         
     }
@@ -81,16 +81,17 @@ public class Parquimetro {
         Se for através de cartão, somente desconta o valor do saldo do cartão
         (se o saldo for insuficiente, é tratado no método desconta da classe cartao)
     */
-    public void registraPagamento(LocalDateTime saida, double valorPago, IPagamento pagamento) throws PagamentoException{
+    public void registraPagamento(LocalDateTime chegada, LocalDateTime saida,
+                                    double valorPago, IPagamento pagamento) throws PagamentoException{
         tipoPagamento = pagamento;
         this.valorPago = valorPago;
         if(pagamento instanceof CoinCollector){
-            double valorNecessario = calculaValor(saida);
-            if(!(valorPago >= valorNecessario)) throw new PagamentoException("Valor Insuficiente");
+            double valorNecessario = calculaValor(chegada,saida);
+            if(valorPago < valorNecessario) throw new PagamentoException("Valor Insuficiente");
             if(valorPago > valorNecessario) System.out.println("Troco: " + pagamento.getTroco(valorPago - valorNecessario));
         }
         else
-            pagamento.desconta(calculaValor(saida));
+            pagamento.desconta(calculaValor(chegada, saida));
     }
     
     /*
@@ -109,9 +110,8 @@ public class Parquimetro {
     /*
         Calcula o valor a ser pago a partir do tempo de estadia
     */
-    public double calculaValor(LocalDateTime saida){
+    public double calculaValor(LocalDateTime chegada, LocalDateTime saida){
         
-        LocalDateTime chegada = LocalDateTime.of(2016, Month.JUNE, 3, 12, 00);
         int diferencaTempo = diferencaTempo(chegada,saida);
         double valorInicial = valorMinimo;
         int diferenca = (diferencaTempo - 30)/10;
@@ -122,9 +122,9 @@ public class Parquimetro {
     /*
         Verifica se o tempo de permanencia está entre os limites mínimo e máximo
     */
-    private void tempoEstadia(LocalDateTime saida) throws ParquimetroException{
+    private void tempoEstadia(LocalDateTime chegada, LocalDateTime saida) throws ParquimetroException{
         
-        int diferencaTempo = diferencaTempo(LocalDateTime.of(2016, Month.JUNE, 3, 12, 00), saida);
+        int diferencaTempo = diferencaTempo(chegada, saida);
         if(diferencaTempo > 120) throw new ParquimetroException("Tempo de estadia além do tempo máximo");
         if(diferencaTempo < 30) throw new ParquimetroException("Tempo de estadia menor do que o tempo minimo");
         
