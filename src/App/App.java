@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class App {
     public static void main(String args[])throws Exception{
         
+        double valorPago = 0;
         CoinCollector coinMachine = CoinCollector.getInstance();
         LocalDateTime chegada = LocalDateTime.now();
         LocalDateTime saida = chegada.plusMinutes(30);
@@ -33,7 +34,7 @@ public class App {
         }
         
         System.out.println("Moedas: 1)0.05, 2)0.1, 3)0.25, 4)0.5, 5)1.0");
-        
+        f.insereMoeda(0.25);
         while((!op.equals("pronto"))){
             
             op = in.nextLine();
@@ -41,29 +42,34 @@ public class App {
             switch(op){
                 case "1":
                     f.insereMoeda(0.05);
-                    System.out.println("Total Pago: " + coinMachine.getSaldo());
+                    valorPago+=0.05;
+                    System.out.println("Total Pago: " + valorPago);
                     break;
                 case "2":
                     f.insereMoeda(0.1);
-                    System.out.println("Total Pago: " + coinMachine.getSaldo());
+                    valorPago+=0.1;
+                    System.out.println("Total Pago: " + valorPago);
                     break;
                 case "3":
                     f.insereMoeda(0.25);
-                    System.out.println("Total Pago: " + coinMachine.getSaldo());
+                    valorPago+=0.25;
+                    System.out.println("Total Pago: " + valorPago);
                     break;
                 case "4":
                     f.insereMoeda(0.5);
-                    System.out.println("Total Pago: " + coinMachine.getSaldo());
+                    valorPago+=0.5;
+                    System.out.println("Total Pago: " + valorPago);
                     break;
                 case "5":
                     f.insereMoeda(1.0);
-                    System.out.println("Total Pago: " + coinMachine.getSaldo());
+                    valorPago+=1.0;
+                    System.out.println("Total Pago: " + valorPago);
                     break;
             }
         }
         
         
-        f.geraTicket(coinMachine.getSaldo());
+        f.geraTicket(valorPago);
         f.geraLogParquimetro();
         System.out.println("Saldo Maquina: " + coinMachine.getSaldo());
     }

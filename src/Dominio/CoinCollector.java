@@ -1,6 +1,10 @@
 package Dominio;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 public class CoinCollector implements IPagamento{
     private double saldo;
@@ -128,46 +132,20 @@ public class CoinCollector implements IPagamento{
         valor possível menor que a variável -valor-
     */
     public double getTroco(double valor) throws PagamentoException {
-        EnumCoin aux = EnumCoin.UMREAL;
         double troco = 0;
         
-        while(valor>0){
-            if(listaMoedas.get(aux) != null && listaMoedas.get(aux)>0 && valor>= 1){
-                retiraMoeda(valor);
-                troco += 1;
-                valor -= 1;
-                continue;
+        List<EnumCoin> moedas = new ArrayList<>();
+        
+        moedas.addAll(Arrays.asList(EnumCoin.values()));
+        Collections.reverse(moedas);
+
+            for(EnumCoin coin : moedas){
+                if(listaMoedas.get(coin) != null && listaMoedas.get(coin)>0 && valor>= coin.getValor()){
+                    retiraMoeda(valor);
+                    troco += 1;
+                    valor -= 1;
+                }
             }
-            else aux = EnumCoin.CINQUENTA;
-            if(listaMoedas.get(aux) != null && listaMoedas.get(aux)>0 && valor>= 0.5){
-                retiraMoeda(valor);
-                troco += 0.5;
-                valor -= 0.5;
-                continue;
-            }
-            else aux = EnumCoin.VINTECINCO;
-            if(listaMoedas.get(aux) != null && listaMoedas.get(aux)>0 && valor>= 0.25){
-                retiraMoeda(valor);
-                troco += 0.25;
-                valor -= 0.25;
-                continue;
-            }
-            else aux = EnumCoin.DEZ;
-            if(listaMoedas.get(aux) != null && listaMoedas.get(aux)>0 && valor>= 0.1){
-                retiraMoeda(valor);
-                troco += 0.1;
-                valor -= 0.1;
-                continue;
-            }
-            else aux = EnumCoin.CINCO;
-            if(listaMoedas.get(aux) != null && listaMoedas.get(aux)>0 && valor>= 0.05){
-                retiraMoeda(valor);
-                troco += 0.05;
-                valor -= 0.05;
-                continue;
-            }
-            if(valor>0) break;
-        }
         
         return troco;
     }

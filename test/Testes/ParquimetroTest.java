@@ -184,5 +184,27 @@ public class ParquimetroTest {
         
     }
     
+    @Test
+    public void arrumaTroco() throws Exception{
+        
+        LocalDateTime saida = LocalDateTime.now().plusMinutes(30);
+        Facade fachada = new Facade(LocalDateTime.now(),saida);
+        fachada.insereMoeda(0.25);
+        fachada.insereMoeda(0.25);
+        fachada.insereMoeda(0.25);
+        Ticket t = fachada.geraTicket(0.75);
+        
+        saida = LocalDateTime.now().plusMinutes(70);
+        fachada = new Facade(LocalDateTime.now(),saida);
+        
+        fachada.insereMoeda(1.0);
+        fachada.insereMoeda(1.0);
+        
+        Ticket p = fachada.geraTicket(2.0);
+        assertNotNull(t);
+        assertNotNull(p);
+        assertEquals(2.50f,coinMachine.getSaldo(),0.0f);
+    }
+    
     
 }
