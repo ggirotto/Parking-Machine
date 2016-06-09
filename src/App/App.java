@@ -7,10 +7,11 @@ import java.util.Scanner;
 public class App {
     public static void main(String args[])throws Exception{
         
-
         CoinCollector coinMachine = CoinCollector.getInstance();
         LocalDateTime chegada = LocalDateTime.now();
         LocalDateTime saida = chegada.plusMinutes(30);
+        
+        Facade f = new Facade(chegada,saida);
         
         Scanner in = new Scanner(System.in);
         String op = "";
@@ -39,29 +40,29 @@ public class App {
             
             switch(op){
                 case "1":
-                    coinMachine.deposita(0.05);
+                    f.insereMoeda(0.05);
                     System.out.println("Total Pago: " + coinMachine.getSaldo());
                     break;
                 case "2":
-                    coinMachine.deposita(0.1);
+                    f.insereMoeda(0.1);
                     System.out.println("Total Pago: " + coinMachine.getSaldo());
                     break;
                 case "3":
-                    coinMachine.deposita(0.25);
+                    f.insereMoeda(0.25);
                     System.out.println("Total Pago: " + coinMachine.getSaldo());
                     break;
                 case "4":
-                    coinMachine.deposita(0.5);
+                    f.insereMoeda(0.5);
                     System.out.println("Total Pago: " + coinMachine.getSaldo());
                     break;
                 case "5":
-                    coinMachine.deposita(1.0);
+                    f.insereMoeda(1.0);
                     System.out.println("Total Pago: " + coinMachine.getSaldo());
                     break;
             }
         }
         
-        Facade f = new Facade(coinMachine,chegada,saida);
+        
         f.geraTicket(coinMachine.getSaldo());
         f.geraLogParquimetro();
         System.out.println("Saldo Maquina: " + coinMachine.getSaldo());

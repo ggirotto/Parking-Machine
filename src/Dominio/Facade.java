@@ -3,24 +3,29 @@ package Dominio;
 import java.time.LocalDateTime;
 
 public class Facade {
-    private final IPagamento pagamento;
+    private IPagamento tipoPagamento;
     private final Parquimetro parquimetro;
     private final LocalDateTime chegada;
     private final LocalDateTime saida;
+    private CartaoRecarregavel cartao = null;
     
-    public Facade(IPagamento ip,LocalDateTime chegada,LocalDateTime saida){
-        pagamento = ip;
+    public Facade(LocalDateTime chegada,LocalDateTime saida){
         this.chegada = chegada;
         this.saida = saida;
         parquimetro = new Parquimetro();
+        tipoPagamento = CoinCollector.getInstance();
     }
     
+    public void cartaoInserido(CartaoRecarregavel card){
+        cartao = card;
+        tipoPagamento = card;
+    }
     /*
         Gera e imprime o ticket
     */
     public Ticket geraTicket(double valorPago) throws ParquimetroException, PagamentoException, TicketException{
-        parquimetro.registraPagamento(chegada, saida, valorPago, pagamento);
-        return parquimetro.geraTicket(chegada, saida);
+        parquimetro.registraPagamento(chegada, saida, valorPago, tipoPagamento);
+        return parquimetro.geraTicket(chegada, saida,tipoPagamento,valorPago);
     }
     
     /*
@@ -28,5 +33,9 @@ public class Facade {
     */
     public void geraLogParquimetro() throws ParquimetroException{
         parquimetro.geraLogParquimetro();
+    }
+    
+    public void insereMoeda(double valor) throws PagamentoException{
+        parquimetro.inserirMoeda(valor);
     }
 }

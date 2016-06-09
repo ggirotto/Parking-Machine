@@ -16,29 +16,29 @@ public class Parquimetro {
     private final double valorMinimo = 0.75;
     private final double valorMaximo = 3.0;
     private final double valorIncremento = 0.25;
-    private IPagamento tipoPagamento;
-    private static double valorPago = 0;
     private final AdaptadorNegocioPersistencia adapter;
+    private final CoinCollector coinMachine;
     
     public Parquimetro() {
         adapter = new AdaptadorNegocioPersistencia();
+        coinMachine = CoinCollector.getInstance();
     }
     
+    public void inserirMoeda(double valor) throws PagamentoException{
+        coinMachine.insereMoeda(valor);
+    }
     /*
         Gera e imprime o ticket
     */
-    public Ticket geraTicket(LocalDateTime chegada, LocalDateTime saida)
-                            throws PagamentoException, ParquimetroException, TicketException{
+    public Ticket geraTicket(LocalDateTime chegada, LocalDateTime saida, IPagamento tipoPagamento, 
+                             double valorPago) throws ParquimetroException, TicketException{
         
         Ticket t;
         //if(isTarifying()){
-            boolean verificaPagamento = verificaValorPago(diferencaTempo(chegada,saida));
-            tempoEstadia(chegada, saida);
-            if(!verificaPagamento) throw new PagamentoException("Valor pago insuficiente");
+            verificaTempoEstadia(chegada, saida);
             t = new Ticket(saida,identificacao,endereco);
         //} else throw new ParquimetroException("O parquimetro não está operando");
-        armazenaTicket(t);
-        valorPago = 0;
+        armazenaTicket(t,tipoPagamento,valorPago);
         return t;
         
     }
@@ -46,7 +46,7 @@ public class Parquimetro {
     /*
         Armazena o ticket na camada de Persistencia
     */
-    public void armazenaTicket(Ticket t) throws ParquimetroException {
+    public void armazenaTicket(Ticket t, IPagamento tipoPagamento,double valorPago) throws ParquimetroException {
         
         try{
             
@@ -82,35 +82,18 @@ public class Parquimetro {
         (se o saldo for insuficiente, é tratado no método desconta da classe cartao)
     */
     public void registraPagamento(LocalDateTime chegada, LocalDateTime saida,
-                                    double valorPago, IPagamento pagamento) throws PagamentoException{
-        tipoPagamento = pagamento;
-        this.valorPago = valorPago;
-        if(pagamento instanceof CoinCollector){
-            double valorNecessario = calculaValor(chegada,saida);
-            if(valorPago < valorNecessario) throw new PagamentoException("Valor Insuficiente");
-            if(valorPago > valorNecessario) System.out.println("Troco: " + pagamento.getTroco(valorPago - valorNecessario));
+                                    double valorPago, IPagamento tipoPagamento) throws PagamentoException{
+        if(tipoPagamento instanceof CoinCollector){
+            ((CoinCollector)tipoPagamento).verificaValorPago(calculaValorNecessario(chegada,saida));
         }
         else
-            pagamento.desconta(calculaValor(chegada, saida));
-    }
-    
-    /*
-        Verifica se o valor pago condiz com o tempo de estadia escolhido
-    */
-    private boolean verificaValorPago(int diferencaTempo){
-        
-        double valorInicial = valorMinimo;
-        int diferenca = (diferencaTempo - 30)/10;
-        valorInicial += valorIncremento*diferenca;
-        if(valorInicial > valorMaximo) return false;
-        return valorInicial <= valorPago;
-        
+            ((CartaoRecarregavel)tipoPagamento).desconta(calculaValorNecessario(chegada, saida));
     }
     
     /*
         Calcula o valor a ser pago a partir do tempo de estadia
     */
-    public double calculaValor(LocalDateTime chegada, LocalDateTime saida){
+    public double calculaValorNecessario(LocalDateTime chegada, LocalDateTime saida){
         
         int diferencaTempo = diferencaTempo(chegada,saida);
         double valorInicial = valorMinimo;
@@ -122,7 +105,7 @@ public class Parquimetro {
     /*
         Verifica se o tempo de permanencia está entre os limites mínimo e máximo
     */
-    private void tempoEstadia(LocalDateTime chegada, LocalDateTime saida) throws ParquimetroException{
+    private void verificaTempoEstadia(LocalDateTime chegada, LocalDateTime saida) throws ParquimetroException{
         
         int diferencaTempo = diferencaTempo(chegada, saida);
         if(diferencaTempo > 120) throw new ParquimetroException("Tempo de estadia além do tempo máximo");
@@ -153,7 +136,6 @@ public class Parquimetro {
     */
     public String getIdentificacao(){ return identificacao; }
     public String getEndereco(){ return endereco; }
-    public IPagamento getPagamento(){ return tipoPagamento; }
     
 
 }

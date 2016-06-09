@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 public class CoinCollector implements IPagamento{
     private double saldo;
+    private double saldoOperacao;
     private final String tipo = "Pagamento em moedas";
     private final HashMap<EnumCoin, Integer> listaMoedas = new HashMap<>();
     private static CoinCollector coinMachine = null;
@@ -13,8 +14,7 @@ public class CoinCollector implements IPagamento{
         return coinMachine;
     }
     
-    @Override
-    public void desconta(double valor) throws PagamentoException {
+    public void retiraMoeda(double valor) throws PagamentoException {
         
         EnumCoin enumerador = null;
         /*
@@ -47,12 +47,34 @@ public class CoinCollector implements IPagamento{
             Retira o valor dela do saldo da máquina e decrementa o número
             de moedas em 1
         */
-        saldo-=valor;
-        
+        if(saldoOperacao > 0) saldoOperacao -= valor;
+        else saldo -= valor;
+    }
+    
+    /*
+        Assim que o ticket é impresso e a operação finalizada, o saldoOperacao
+        É acumulado no saldo total da máquina e depois zerado
+    */
+    public void arrumaSaldo(){
+        saldo += saldoOperacao;
+        saldoOperacao = 0;
+    }
+    
+    /*
+        Verifica se o saldo da operação está de acordo
+        com a valor que necessita ser pago
+    */
+    public double verificaValorPago(double valorNecessario) throws PagamentoException{
+        double troco = 0;
+        if(saldoOperacao < valorNecessario) throw new PagamentoException("Valor Pago insuficiente!");
+        if(saldoOperacao > valorNecessario){
+            troco = getTroco(saldoOperacao - valorNecessario);
+        }
+        arrumaSaldo();
+        return troco;
     }
 
-    @Override
-    public void deposita(double valor) throws PagamentoException{
+    public void insereMoeda(double valor) throws PagamentoException{
         
         EnumCoin enumerador = null;
         
@@ -91,7 +113,7 @@ public class CoinCollector implements IPagamento{
         /*
             Aumenta o saldo com o valor da moeda e incrementa o número de moedas.
         */
-        saldo+=valor;
+        saldoOperacao+=valor;
     }
 
     @Override
@@ -105,45 +127,43 @@ public class CoinCollector implements IPagamento{
         Se a máquina não possui moedas suficientes, retira o maior
         valor possível menor que a variável -valor-
     */
-    @Override
-    public double getTroco(double valor) {
-        
+    public double getTroco(double valor) throws PagamentoException {
         EnumCoin aux = EnumCoin.UMREAL;
         double troco = 0;
         
         while(valor>0){
             if(listaMoedas.get(aux) != null && listaMoedas.get(aux)>0 && valor>= 1){
+                retiraMoeda(valor);
                 troco += 1;
                 valor -= 1;
-                saldo -= 1;
                 continue;
             }
             else aux = EnumCoin.CINQUENTA;
             if(listaMoedas.get(aux) != null && listaMoedas.get(aux)>0 && valor>= 0.5){
+                retiraMoeda(valor);
                 troco += 0.5;
                 valor -= 0.5;
-                saldo -= 0.5;
                 continue;
             }
             else aux = EnumCoin.VINTECINCO;
             if(listaMoedas.get(aux) != null && listaMoedas.get(aux)>0 && valor>= 0.25){
+                retiraMoeda(valor);
                 troco += 0.25;
                 valor -= 0.25;
-                saldo -= 0.25;
                 continue;
             }
             else aux = EnumCoin.DEZ;
             if(listaMoedas.get(aux) != null && listaMoedas.get(aux)>0 && valor>= 0.1){
+                retiraMoeda(valor);
                 troco += 0.1;
                 valor -= 0.1;
-                saldo -= 0.1;
                 continue;
             }
             else aux = EnumCoin.CINCO;
             if(listaMoedas.get(aux) != null && listaMoedas.get(aux)>0 && valor>= 0.05){
+                retiraMoeda(valor);
                 troco += 0.05;
                 valor -= 0.05;
-                saldo -= 0.05;
                 continue;
             }
             if(valor>0) break;
@@ -160,6 +180,7 @@ public class CoinCollector implements IPagamento{
     @Override
     public void zeraSaldo(){ 
         saldo = 0;
+        saldoOperacao = 0;
         listaMoedas.clear();
     }
 }
