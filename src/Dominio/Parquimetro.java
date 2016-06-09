@@ -31,12 +31,12 @@ public class Parquimetro {
                             throws PagamentoException, ParquimetroException, TicketException{
         
         Ticket t;
-        if(isTarifying()){
+        //if(isTarifying()){
             boolean verificaPagamento = verificaValorPago(diferencaTempo(chegada,saida));
             tempoEstadia(chegada, saida);
             if(!verificaPagamento) throw new PagamentoException("Valor pago insuficiente");
             t = new Ticket(saida,identificacao,endereco);
-        } else throw new ParquimetroException("O parquimetro não está operando");
+        //} else throw new ParquimetroException("O parquimetro não está operando");
         armazenaTicket(t);
         valorPago = 0;
         return t;

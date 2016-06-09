@@ -65,6 +65,8 @@ public class ParquimetroTest {
         Ticket t = fachada.geraTicket(0.75);
         assertNotNull(t);
         assertEquals(0.75f,coinMachine.getSaldo(),0.0f);
+        fachada.geraLogParquimetro();
+        
     }
     
     @Test(expected = PagamentoException.class)
@@ -88,6 +90,8 @@ public class ParquimetroTest {
         Ticket t = fachada.geraTicket(3.0);
         assertNotNull(t);
         assertEquals(3.0f,coinMachine.getSaldo(),0.0f);
+        fachada.geraLogParquimetro();
+        
     }
     
     @Test(expected = PagamentoException.class)
@@ -111,6 +115,7 @@ public class ParquimetroTest {
         Ticket t = fachada.geraTicket(2.0);
         assertNotNull(t);
         assertEquals(2.0f,coinMachine.getSaldo(),0.0f);
+        fachada.geraLogParquimetro();
         
     }
     
@@ -139,6 +144,8 @@ public class ParquimetroTest {
         Ticket t = fachada.geraTicket(2.5);
         assertNotNull(t);
         assertEquals(2.50f,coinMachine.getSaldo(),0.0f);
+        fachada.geraLogParquimetro();
+        
     }
     
     @Test
@@ -152,6 +159,7 @@ public class ParquimetroTest {
         Ticket t = fachada.geraTicket(2.5);
         assertNotNull(t);
         assertEquals(2.50f,coinMachine.getSaldo(),0.0f);
+        fachada.geraLogParquimetro();
         
     }
     
@@ -165,6 +173,7 @@ public class ParquimetroTest {
         Ticket t = fachada.geraTicket(3);
         assertNotNull(t);
         assertEquals(0,cartao.getSaldo(),0.0f);
+        fachada.geraLogParquimetro();
         
     }
     
@@ -189,6 +198,7 @@ public class ParquimetroTest {
         Ticket t = fachada.geraTicket(3);
         assertNotNull(t);
         assertEquals(7.0f,cartao.getSaldo(),0.0f);
+        fachada.geraLogParquimetro();
         
     }
     

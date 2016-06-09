@@ -41,22 +41,21 @@ public class RelatorioDAODTOStore implements RelatorioDAO{
         BufferedWriter bw = new BufferedWriter(writer);
         PrintWriter out = new PrintWriter(bw)){
         
-            out.println("#");
-            out.println("Identificação do Parquimetro: " + informacoes.getParqId());
-            out.println("Endereço do Parquimetro: " + informacoes.getParqAddres());
-            out.println("Tickets e informações: ");
+            out.print(informacoes.getParqId()+";");
+            out.print(informacoes.getParqAddres()+";");
             for(TicketDTO t : listaTickets){
-                out.println("--Ticket: " + t.getSerial());
-                out.println("\tData de Chegada: " + t.getChegada().toString());
-                out.println("\tData de Saída: " + t.getSaida().toString());
-                out.println("\tValor Pago: " + t.getValorPago());
-                out.println("\tForma de Pagamento: " + t.getTipoPagamento());
+                out.print("#");
+                out.print(t.getSerial()+";");
+                out.print(t.getChegada().toString()+";");
+                out.print(t.getSaida().toString()+";");
+                out.print(t.getValorPago()+";");
+                out.print(t.getTipoPagamento()+";");
+                out.print("#");
                 totalArrecadado += t.getValorPago();
             }
-            // todo
-            out.println("Número de Tickets emitidos: " + listaTickets.size());
-            out.println("Total Arrecadado: " + totalArrecadado);
-            out.println("\n");
+            out.print(listaTickets.size()+";");
+            out.print(totalArrecadado+";");
+            out.print("\n");
         }
         catch (IOException e){}
         
