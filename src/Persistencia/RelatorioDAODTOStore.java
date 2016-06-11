@@ -1,17 +1,17 @@
 package Persistencia;
 
-import java.io.BufferedWriter;
+import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
-public class RelatorioDAODTOStore implements RelatorioDAO{
+public class RelatorioDAODTOStore implements RelatorioDAO, Serializable{
     
     private final File arquivo;
-    private final List<TicketDTO> listaTickets;
+    private final ArrayList<TicketDTO> listaTickets;
     
     public RelatorioDAODTOStore(){
         arquivo = new File("relatorioParquimetro.txt");
@@ -32,32 +32,16 @@ public class RelatorioDAODTOStore implements RelatorioDAO{
         Imprime o relatório do parquimetro
     */
     @Override
-    public void geraRelatorioParquimetro() throws RelatorioDAOException {
+    public void geraRelatorioParquimetro() throws RelatorioDAOException, IOException {
         
-        TicketDTO informacoes = listaTickets.get(0);
-        double totalArrecadado = 0;
-        
-        try(FileWriter writer = new FileWriter(arquivo, true);
-        BufferedWriter bw = new BufferedWriter(writer);
-        PrintWriter out = new PrintWriter(bw)){
-        
-            out.print(informacoes.getParqId()+";");
-            out.print(informacoes.getParqAddres()+";");
-            for(TicketDTO t : listaTickets){
-                out.print("#");
-                out.print(t.getSerial()+";");
-                out.print(t.getChegada().toString()+";");
-                out.print(t.getSaida().toString()+";");
-                out.print(t.getValorPago()+";");
-                out.print(t.getTipoPagamento()+";");
-                out.print("#");
-                totalArrecadado += t.getValorPago();
-            }
-            out.print(listaTickets.size()+";");
-            out.print(totalArrecadado+";");
-            out.print("\n");
+        ObjectOutputStream out = null;
+        try {
+            out = new ObjectOutputStream(new
+            BufferedOutputStream(new FileOutputStream("listaTickets.bin")));
+            out.writeObject(listaTickets);
+        } finally {
+            out.close();
         }
-        catch (IOException e){}
         
     }
     

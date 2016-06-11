@@ -12,7 +12,7 @@ public class Facade {
     public Facade(LocalDateTime chegada,LocalDateTime saida){
         this.chegada = chegada;
         this.saida = saida;
-        parquimetro = new Parquimetro();
+        parquimetro = Parquimetro.getInstance();
         tipoPagamento = CoinCollector.getInstance();
     }
     

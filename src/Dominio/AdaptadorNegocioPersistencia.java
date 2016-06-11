@@ -1,5 +1,7 @@
 package Dominio;
+
 import Persistencia.*;
+import java.io.IOException;
 
 public class AdaptadorNegocioPersistencia {
     
@@ -20,7 +22,7 @@ public class AdaptadorNegocioPersistencia {
         
     }
 
-    public void geraRelatorioParquimetro() throws RelatorioDAOException {
+    public void geraRelatorioParquimetro() throws RelatorioDAOException, IOException {
         
         relatorio.geraRelatorioParquimetro();
         

@@ -1,8 +1,9 @@
 package Persistencia;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class TicketDTO {
+public class TicketDTO implements Serializable{
     
     private final String serial;
     private final LocalDateTime chegada;

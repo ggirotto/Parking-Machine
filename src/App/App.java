@@ -7,16 +7,16 @@ import java.util.Scanner;
 public class App {
     public static void main(String args[])throws Exception{
         
+        Facade f = null;
+        int i = 0;
+        
+        while(i!= 3){
         double valorPago = 0;
-        CoinCollector coinMachine = CoinCollector.getInstance();
         LocalDateTime chegada = LocalDateTime.now();
         LocalDateTime saida = chegada.plusMinutes(30);
         
-        Facade f = new Facade(chegada,saida);
-        
         Scanner in = new Scanner(System.in);
         String op = "";
-        
         while((!op.equals("pagar"))){
             
             op = in.nextLine();
@@ -34,7 +34,7 @@ public class App {
         }
         
         System.out.println("Moedas: 1)0.05, 2)0.1, 3)0.25, 4)0.5, 5)1.0");
-        f.insereMoeda(0.25);
+        f = new Facade(chegada,saida);
         while((!op.equals("pronto"))){
             
             op = in.nextLine();
@@ -70,8 +70,10 @@ public class App {
         
         
         f.geraTicket(valorPago);
+        i++;
+        }
+        
         f.geraLogParquimetro();
-        System.out.println("Saldo Maquina: " + coinMachine.getSaldo());
     }
     
     /*

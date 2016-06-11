@@ -35,7 +35,6 @@ public class ParquimetroTest {
         Ticket t = f.geraTicket(0.75);
         assertNotNull(t);
         assertEquals(0.75f,coinMachine.getSaldo(),0.0f);
-        f.geraLogParquimetro();
         
     }
     
@@ -62,7 +61,6 @@ public class ParquimetroTest {
         Ticket t = fachada.geraTicket(3.0);
         assertNotNull(t);
         assertEquals(3.0f,coinMachine.getSaldo(),0.0f);
-        fachada.geraLogParquimetro();
         
     }
     
@@ -89,7 +87,6 @@ public class ParquimetroTest {
         Ticket t = fachada.geraTicket(2.0);
         assertNotNull(t);
         assertEquals(2.0f,coinMachine.getSaldo(),0.0f);
-        fachada.geraLogParquimetro();
         
     }
     
@@ -122,7 +119,6 @@ public class ParquimetroTest {
         Ticket t = fachada.geraTicket(2.5);
         assertNotNull(t);
         assertEquals(2.50f,coinMachine.getSaldo(),0.0f);
-        fachada.geraLogParquimetro();
         
     }
     
@@ -138,7 +134,6 @@ public class ParquimetroTest {
         Ticket t = fachada.geraTicket(2.5);
         assertNotNull(t);
         assertEquals(2.50f,coinMachine.getSaldo(),0.0f);
-        fachada.geraLogParquimetro();
         
     }
     
@@ -153,7 +148,6 @@ public class ParquimetroTest {
         Ticket t = fachada.geraTicket(3);
         assertNotNull(t);
         assertEquals(0,cartao.getSaldo(),0.0f);
-        fachada.geraLogParquimetro();
         
     }
     
@@ -182,28 +176,6 @@ public class ParquimetroTest {
         assertEquals(7.0f,cartao.getSaldo(),0.0f);
         fachada.geraLogParquimetro();
         
-    }
-    
-    @Test
-    public void arrumaTroco() throws Exception{
-        
-        LocalDateTime saida = LocalDateTime.now().plusMinutes(30);
-        Facade fachada = new Facade(LocalDateTime.now(),saida);
-        fachada.insereMoeda(0.25);
-        fachada.insereMoeda(0.25);
-        fachada.insereMoeda(0.25);
-        Ticket t = fachada.geraTicket(0.75);
-        
-        saida = LocalDateTime.now().plusMinutes(70);
-        fachada = new Facade(LocalDateTime.now(),saida);
-        
-        fachada.insereMoeda(1.0);
-        fachada.insereMoeda(1.0);
-        
-        Ticket p = fachada.geraTicket(2.0);
-        assertNotNull(t);
-        assertNotNull(p);
-        assertEquals(2.50f,coinMachine.getSaldo(),0.0f);
     }
     
     
