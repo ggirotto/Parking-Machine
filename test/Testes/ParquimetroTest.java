@@ -1,5 +1,6 @@
 package Testes;
 
+import Ticket.*;
 import org.junit.*;
 import Dominio.*;
 import java.time.LocalDateTime;

@@ -2,6 +2,8 @@ package Dominio;
 
 import Persistencia.*;
 import java.io.IOException;
+import Ticket.Ticket;
+import Ticket.TicketException;
 
 public class AdaptadorNegocioPersistencia {
     

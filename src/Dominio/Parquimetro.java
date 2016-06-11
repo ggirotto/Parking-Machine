@@ -1,5 +1,6 @@
 package Dominio;
 
+import Ticket.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
