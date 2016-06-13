@@ -53,14 +53,4 @@ public class Ticket {
     public LocalDateTime getSaida(){ return saida; }
     public String getParqId(){ return parqId; }
     public String getParqAddress(){ return parqAddress; }
-    
-    @Override
-    public String toString()
-    {
-        return  "\n#\nSerial: "+getSerial()+
-                "\nChegada: "+getChegada()+
-                "\nSaida: "+getSaida()+
-                "\nID do Parquimetro: "+getParqId()+
-                "\nEndereco do Parquimetro: "+getParqAddress();
-    }
 }
