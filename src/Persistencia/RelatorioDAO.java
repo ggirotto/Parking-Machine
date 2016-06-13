@@ -1,5 +1,6 @@
 package Persistencia;
 
+import TicketDTO.TicketDTO;
 import java.io.IOException;
 
 public interface RelatorioDAO {
