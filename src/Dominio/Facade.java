@@ -11,7 +11,10 @@ public class Facade {
     private static Facade facade = null;
     
     public static Facade getInstance(LocalDateTime chegada,LocalDateTime saida){
-        if(facade == null) facade = new Facade(chegada, saida);
+        if(facade == null){
+            facade = new Facade(chegada, saida);
+            return facade;
+        }
         Facade.chegada = chegada;
         Facade.saida = saida;
         return facade;        
