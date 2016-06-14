@@ -5,13 +5,15 @@ import java.time.LocalDateTime;
 public class Facade {
     private IPagamento tipoPagamento;
     private final Parquimetro parquimetro;
-    private final LocalDateTime chegada;
-    private final LocalDateTime saida;
+    private static LocalDateTime chegada;
+    private static LocalDateTime saida;
     private CartaoRecarregavel cartao = null;
     private static Facade facade = null;
     
     public static Facade getInstance(LocalDateTime chegada,LocalDateTime saida){
-        if(facade == null) return new Facade(chegada, saida);
+        if(facade == null) facade = new Facade(chegada, saida);
+        Facade.chegada = chegada;
+        Facade.saida = saida;
         return facade;        
     }
     
