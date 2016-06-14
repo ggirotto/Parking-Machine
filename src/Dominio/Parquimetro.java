@@ -16,13 +16,12 @@ public class Parquimetro {
     private final double valorMinimo = 0.75;
     private final double valorMaximo = 3.0;
     private final double valorIncremento = 0.25;
-    private final AdaptadorNegocioPersistencia adapter = new AdaptadorNegocioPersistencia();
-    private final CoinCollector coinMachine = CoinCollector.getInstance();;
-    private static Parquimetro parquimetro = null;
+    private final AdaptadorNegocioPersistencia adapter;
+    private final CoinCollector coinMachine;
     
-    public static Parquimetro getInstance(){
-        if(parquimetro == null) parquimetro = new Parquimetro();
-        return parquimetro;
+    public Parquimetro (){
+        adapter = new AdaptadorNegocioPersistencia();
+        coinMachine = new CoinCollector();
     }
     
     public void inserirMoeda(double valor) throws PagamentoException{
@@ -137,6 +136,7 @@ public class Parquimetro {
     */
     public String getIdentificacao(){ return identificacao; }
     public String getEndereco(){ return endereco; }
+    public IPagamento getCoinCollector(){ return coinMachine; }
     
 
 }

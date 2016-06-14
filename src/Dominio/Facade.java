@@ -8,12 +8,18 @@ public class Facade {
     private final LocalDateTime chegada;
     private final LocalDateTime saida;
     private CartaoRecarregavel cartao = null;
+    private static Facade facade = null;
     
-    public Facade(LocalDateTime chegada,LocalDateTime saida){
+    public static Facade getInstance(LocalDateTime chegada,LocalDateTime saida){
+        if(facade == null) return new Facade(chegada, saida);
+        return facade;        
+    }
+    
+    private Facade(LocalDateTime chegada,LocalDateTime saida){
         this.chegada = chegada;
         this.saida = saida;
-        parquimetro = Parquimetro.getInstance();
-        tipoPagamento = CoinCollector.getInstance();
+        parquimetro = new Parquimetro();
+        tipoPagamento = parquimetro.getCoinCollector();
     }
     
     public void cartaoInserido(CartaoRecarregavel card){
@@ -37,5 +43,9 @@ public class Facade {
     
     public void insereMoeda(double valor) throws PagamentoException{
         parquimetro.inserirMoeda(valor);
+    }
+    
+    public double getSaldoMaquina(){
+        return parquimetro.getCoinCollector().getSaldo();
     }
 }

@@ -11,11 +11,10 @@ public class CoinCollector implements IPagamento{
     private double saldoOperacao;
     private final String tipo = "Pagamento em moedas";
     private final HashMap<EnumCoin, Integer> listaMoedas = new HashMap<>();
-    private static CoinCollector coinMachine = null;
     
-    public static CoinCollector getInstance(){
-        if(coinMachine == null) coinMachine = new CoinCollector();
-        return coinMachine;
+    public CoinCollector(){
+        saldo = 0;
+        saldoOperacao = 0;
     }
     
     public void retiraMoeda(double valor) throws PagamentoException {

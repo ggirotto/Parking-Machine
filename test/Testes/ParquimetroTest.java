@@ -6,35 +6,25 @@ import java.time.LocalDateTime;
 import static org.junit.Assert.*;
 
 public class ParquimetroTest {
-    private CoinCollector coinMachine;
-
-    @Before
-    public void setUp() throws PagamentoException {
-        coinMachine = CoinCollector.getInstance();
-    }
-    
-    @After
-    public void zeraSaldo(){
-        coinMachine.zeraSaldo();
-    }
     
     @Test(expected = PagamentoException.class)
     public void testInsereMoedaErrada() throws PagamentoException{
-        coinMachine.insereMoeda(0.01);
+        Facade f = Facade.getInstance(LocalDateTime.now(),LocalDateTime.now());
+        f.insereMoeda(0.01);
     }
     
     @Test
     public void simulaTempoMinimoComValorCorreto() throws PagamentoException, ParquimetroException, TicketException{
         
         LocalDateTime saida = LocalDateTime.now().plusMinutes(30);
-        Facade f = new Facade(LocalDateTime.now(),saida);
+        Facade f = Facade.getInstance(LocalDateTime.now(),saida);
         f.insereMoeda(0.25);
         f.insereMoeda(0.25);
         f.insereMoeda(0.25);
         
         Ticket t = f.geraTicket(0.75);
         assertNotNull(t);
-        assertEquals(0.75f,coinMachine.getSaldo(),0.0f);
+        assertEquals(0.75f,f.getSaldoMaquina(),0.0f);
         
     }
     
@@ -42,7 +32,7 @@ public class ParquimetroTest {
     public void simulaTempoMinimoComValorInferior() throws PagamentoException, ParquimetroException, TicketException{
         
         LocalDateTime saida = LocalDateTime.now().plusMinutes(30);
-        Facade fachada = new Facade(LocalDateTime.now(),saida);
+        Facade fachada = Facade.getInstance(LocalDateTime.now(),saida);
         fachada.insereMoeda(0.25);
         fachada.insereMoeda(0.25);
         
@@ -53,14 +43,14 @@ public class ParquimetroTest {
     public void simulaTempoMaximoComValorCorreto() throws PagamentoException, ParquimetroException, TicketException{
         
         LocalDateTime saida = LocalDateTime.now().plusMinutes(120);
-        Facade fachada = new Facade(LocalDateTime.now(),saida);
+        Facade fachada = Facade.getInstance(LocalDateTime.now(),saida);
         fachada.insereMoeda(1.0);
         fachada.insereMoeda(1.0);
         fachada.insereMoeda(1.0);
         
         Ticket t = fachada.geraTicket(3.0);
         assertNotNull(t);
-        assertEquals(3.0f,coinMachine.getSaldo(),0.0f);
+        assertEquals(3.0f,fachada.getSaldoMaquina(),0.0f);
         
     }
     
@@ -68,7 +58,7 @@ public class ParquimetroTest {
     public void simulaTempoMaximoComValorInferior() throws PagamentoException, ParquimetroException, TicketException{
         
         LocalDateTime saida = LocalDateTime.now().plusMinutes(120);
-        Facade fachada = new Facade(LocalDateTime.now(),saida);
+        Facade fachada = Facade.getInstance(LocalDateTime.now(),saida);
         fachada.insereMoeda(1.0);
         fachada.insereMoeda(1.0);
         fachada.insereMoeda(0.05);
@@ -80,13 +70,13 @@ public class ParquimetroTest {
     public void simulaTempoIntermediarioComValorCorreto() throws PagamentoException, ParquimetroException, TicketException{
         
         LocalDateTime saida = LocalDateTime.now().plusMinutes(80);
-        Facade fachada = new Facade(LocalDateTime.now(),saida);
+        Facade fachada = Facade.getInstance(LocalDateTime.now(),saida);
         fachada.insereMoeda(1.0);
         fachada.insereMoeda(1.0);
         
         Ticket t = fachada.geraTicket(2.0);
         assertNotNull(t);
-        assertEquals(2.0f,coinMachine.getSaldo(),0.0f);
+        assertEquals(2.0f,fachada.getSaldoMaquina(),0.0f);
         
     }
     
@@ -94,7 +84,7 @@ public class ParquimetroTest {
     public void simulaTempoIntermediarioComValorInferior() throws PagamentoException, ParquimetroException, TicketException{
         
         LocalDateTime saida = LocalDateTime.now().plusMinutes(80);
-        Facade fachada = new Facade(LocalDateTime.now(),saida);
+        Facade fachada = Facade.getInstance(LocalDateTime.now(),saida);
         fachada.insereMoeda(1.0);
         fachada.insereMoeda(0.5);
         
@@ -104,21 +94,23 @@ public class ParquimetroTest {
     
     @Test
     public void simulaTrocoCorreto() throws Exception{
-        
-        
-        
-        LocalDateTime saida = LocalDateTime.now().plusMinutes(90);
-        Facade fachada = new Facade(LocalDateTime.now(),saida);
+
+        LocalDateTime saida = LocalDateTime.now().plusMinutes(30);
+        Facade fachada = Facade.getInstance(LocalDateTime.now(),saida);
         // Adiciona para a máquina possuir moeda para dar de troco
         fachada.insereMoeda(0.25);
-        coinMachine.arrumaSaldo();
+        fachada.insereMoeda(0.25);
+        fachada.insereMoeda(0.25);
+        Ticket t = fachada.geraTicket(2.5);
+        saida = LocalDateTime.now().plusMinutes(90);
+        fachada = Facade.getInstance(LocalDateTime.now(),saida);
         fachada.insereMoeda(1.0);
         fachada.insereMoeda(1.0);
         fachada.insereMoeda(0.5);
         
-        Ticket t = fachada.geraTicket(2.5);
+        t = fachada.geraTicket(2.5);
         assertNotNull(t);
-        assertEquals(2.50f,coinMachine.getSaldo(),0.0f);
+        assertEquals(2.50f,fachada.getSaldoMaquina(),0.0f);
         
     }
     
@@ -126,14 +118,14 @@ public class ParquimetroTest {
     public void simulaTrocoComMaquinaSemMoedas() throws Exception{
         
         LocalDateTime saida = LocalDateTime.now().plusMinutes(90);
-        Facade fachada = new Facade(LocalDateTime.now(),saida);
+        Facade fachada = Facade.getInstance(LocalDateTime.now(),saida);
         fachada.insereMoeda(1.0);
         fachada.insereMoeda(1.0);
         fachada.insereMoeda(0.5);
         
         Ticket t = fachada.geraTicket(2.5);
         assertNotNull(t);
-        assertEquals(2.50f,coinMachine.getSaldo(),0.0f);
+        assertEquals(2.50f,fachada.getSaldoMaquina(),0.0f);
         
     }
     
@@ -143,7 +135,7 @@ public class ParquimetroTest {
         CartaoRecarregavel cartao = new CartaoRecarregavel();
         cartao.deposita(3);
         LocalDateTime saida = LocalDateTime.now().plusMinutes(120);
-        Facade fachada = new Facade(LocalDateTime.now(),saida);
+        Facade fachada = Facade.getInstance(LocalDateTime.now(),saida);
         fachada.cartaoInserido(cartao);
         Ticket t = fachada.geraTicket(3);
         assertNotNull(t);
@@ -157,7 +149,7 @@ public class ParquimetroTest {
         CartaoRecarregavel cartao = new CartaoRecarregavel();
         cartao.deposita(2);
         LocalDateTime saida = LocalDateTime.now().plusMinutes(120);
-        Facade fachada = new Facade(LocalDateTime.now(),saida);
+        Facade fachada = Facade.getInstance(LocalDateTime.now(),saida);
         fachada.cartaoInserido(cartao);
         Ticket t = fachada.geraTicket(3);
         
@@ -169,7 +161,7 @@ public class ParquimetroTest {
         CartaoRecarregavel cartao = new CartaoRecarregavel();
         cartao.deposita(2.99);
         LocalDateTime saida = LocalDateTime.now().plusMinutes(120);
-        Facade fachada = new Facade(LocalDateTime.now(),saida);
+        Facade fachada = Facade.getInstance(LocalDateTime.now(),saida);
         fachada.cartaoInserido(cartao);
         Ticket t = fachada.geraTicket(3);
         
@@ -181,7 +173,7 @@ public class ParquimetroTest {
         CartaoRecarregavel cartao = new CartaoRecarregavel();
         cartao.deposita(10);
         LocalDateTime saida = LocalDateTime.now().plusMinutes(120);
-        Facade fachada = new Facade(LocalDateTime.now(),saida);
+        Facade fachada = Facade.getInstance(LocalDateTime.now(),saida);
         fachada.cartaoInserido(cartao);
         Ticket t = fachada.geraTicket(3);
         assertNotNull(t);

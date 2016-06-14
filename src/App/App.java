@@ -34,7 +34,7 @@ public class App {
         }
         
         System.out.println("Moedas: 1)0.05, 2)0.1, 3)0.25, 4)0.5, 5)1.0");
-        f = new Facade(chegada,saida);
+        f = Facade.getInstance(chegada,saida);
         while((!op.equals("pronto"))){
             
             op = in.nextLine();
