@@ -4,11 +4,12 @@ import java.time.LocalDateTime;
 import java.time.LocalDate;
 
 public class Ticket {
-    private final String serial;
-    private final LocalDateTime chegada;
-    private final LocalDateTime saida;
-    private final String parqId;
-    private final String parqAddress;
+    
+    private /*@ non_null @*/ final String serial;
+    private /*@ non_null @*/ final LocalDateTime chegada;
+    private /*@ non_null @*/ final LocalDateTime saida;
+    private /*@ non_null @*/ final String parqId;
+    private /*@ non_null @*/ final String parqAddress;
     private static int SERIAL_CONT = 0;
     private static LocalDate serialController = LocalDate.now();
     
@@ -32,6 +33,9 @@ public class Ticket {
     /*
         Calcula o número de serial do ticket atual
     */
+    /*@ ensures SERIAL_CONT == \old(SERIAL_CONT)+1;
+      @ signals (TicketException e) SERIAL_CONT > 99999;
+    @*/
     private String calculaSerial() throws TicketException{
         
         String retorno = "";
@@ -48,9 +52,9 @@ public class Ticket {
     /*
         getters
     */
-    public String getSerial(){ return serial; }
-    public LocalDateTime getChegada(){ return chegada; }
-    public LocalDateTime getSaida(){ return saida; }
-    public String getParqId(){ return parqId; }
-    public String getParqAddress(){ return parqAddress; }
+    public /*@pure@*/ String getSerial(){ return serial; }
+    public /*@pure@*/ LocalDateTime getChegada(){ return chegada; }
+    public /*@pure@*/ LocalDateTime getSaida(){ return saida; }
+    public /*@pure@*/ String getParqId(){ return parqId; }
+    public /*@pure@*/ String getParqAddress(){ return parqAddress; }
 }

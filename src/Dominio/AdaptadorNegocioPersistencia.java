@@ -13,8 +13,10 @@ public class AdaptadorNegocioPersistencia {
         relatorio = new RelatorioDAODTOStore();
         
     }
-    
-    public void armazenaTicket(Ticket t, IPagamento p, double valorPago) throws RelatorioDAOException {
+    /*@ requires t != null && p != null && valorPago>0;
+      @ ensures ticket != null;
+    @*/
+    public /*@ pure @*/ void armazenaTicket(Ticket t, IPagamento p, double valorPago) throws RelatorioDAOException {
         
         TicketDTO ticket = new TicketDTO(t.getSerial(),t.getChegada(),t.getSaida(),
                                         t.getParqId(), t.getParqAddress(),p.getTipo(),
@@ -23,7 +25,7 @@ public class AdaptadorNegocioPersistencia {
         
     }
 
-    public void geraRelatorioParquimetro() throws RelatorioDAOException, IOException {
+    public /*@ pure @*/ void geraRelatorioParquimetro() throws RelatorioDAOException, IOException {
         
         relatorio.geraRelatorioParquimetro();
         

@@ -1,23 +1,35 @@
 package Dominio;
 
 public class CartaoRecarregavel implements IPagamento{
-    private final String identificacao;
+    private /*@ non_null @*/ final String identificacao;
     private double saldo;
-    private final String tipo = "Cartao recarregavel";
+    private /*@ non_null @*/ final String tipo = "Cartao recarregavel";
     
+    /*@ requires id != null;
+      @ signals (PagamentoException e) id.length() != 128;
+      @ ensures identificacao.length > \old(identificacao.length);
+    @*/
     public CartaoRecarregavel(String id) throws PagamentoException{
-        if(id.length() != 120){
+        if(id.length() != 128){
             throw new PagamentoException("O ID do cartão deve possuir 128 caracteres");
         }
         identificacao = id;
     }
     
+    /*@ requires valor > 0;
+      @ requires saldo > 0;
+      @ ensures saldo < \old(saldo);
+      @ signals (PagamentoException e) saldo < valor;
+    @*/
     public void desconta(double valor) throws PagamentoException{
         if(saldo<valor) throw new PagamentoException("Saldo Insuficiente");
         saldo -= valor;
     }
-
-    public void deposita(double valor) throws PagamentoException{
+    
+    /*@ requires valor > 0;
+      @ ensures saldo > \old(saldo);
+    @*/
+    public void deposita(double valor) {
         saldo += valor;
     }
 

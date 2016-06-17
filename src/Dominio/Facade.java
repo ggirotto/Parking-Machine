@@ -3,36 +3,64 @@ package Dominio;
 import java.time.LocalDateTime;
 
 public class Facade {
-    private IPagamento tipoPagamento;
-    private final Parquimetro parquimetro;
-    private static LocalDateTime chegada;
-    private static LocalDateTime saida;
-    private CartaoRecarregavel cartao = null;
-    private static Facade facade = null;
     
+    private /*@ non_null @*/ IPagamento tipoPagamento;
+    private /*@ non_null @*/ final Parquimetro parquimetro;
+    private /*@ non_null @*/ static LocalDateTime chegada;
+    private /*@ non_null @*/ static LocalDateTime saida;
+    private CartaoRecarregavel cartao = null;
+    private /*@ non_null @*/ static Facade facade = null;
+    
+    /*@ requires chegada != null && saida != null;
+      @ ensures \result == facade;
+      @ ensures !(chegada.equals(\old(chegada)));
+      @ ensures !(saida.equals(\old(saida)));
+    @*/
     public static Facade getInstance(LocalDateTime chegada,LocalDateTime saida){
+        
         if(facade == null){
             facade = new Facade(chegada, saida);
             return facade;
         }
         Facade.chegada = chegada;
         Facade.saida = saida;
-        return facade;        
+        return facade;
+        
     }
     
+    /*@ ensures facade == null; @*/
+    public void zeraFacade(){
+        facade = null;
+    }
+    
+    /*@ requires chegada != null && requires saida != null;
+      @ ensures !(chegada.equals(\old(chegada)));
+      @ ensures !(saida.equals(\old(saida)));
+      @ ensures parquimetro != null;
+      @ ensures tipoPagamento != null;
+      @ ensures tipoPagamento.getTipo() == "Pagamento em moedas";
+    @*/
     private Facade(LocalDateTime chegada,LocalDateTime saida){
-        this.chegada = chegada;
-        this.saida = saida;
+        Facade.chegada = chegada;
+        Facade.saida = saida;
         parquimetro = new Parquimetro();
         tipoPagamento = parquimetro.getCoinCollector();
     }
     
+    /*@ requires card != null;
+      @ ensures tipoPagamento != null;
+      @ ensures tipoPagamento.getTipo() == "Cartao recarregavel";
+    @*/
     public void cartaoInserido(CartaoRecarregavel card){
         cartao = card;
         tipoPagamento = card;
     }
+    
     /*
         Gera e imprime o ticket
+    */
+    /*@ requires valorPago > 0;
+      @ signals (PagamentoException e) valorPago <= 0;
     */
     public Ticket geraTicket(double valorPago) throws ParquimetroException, PagamentoException, TicketException{
         parquimetro.registraPagamento(chegada, saida, valorPago, tipoPagamento);
@@ -42,15 +70,21 @@ public class Facade {
     /*
         Gera o log do parquimetro com todas as informações necessárias
     */
-    public void geraLogParquimetro() throws ParquimetroException{
+    public /*@ pure @*/ void geraLogParquimetro() throws ParquimetroException{
         parquimetro.geraLogParquimetro();
     }
     
+    /*@ requires valor == 0.05 ||  valor == 0.1 ||  valor == 0.25 ||  valor == 0.5 ||  valor == 1.0;
+      @ ensures tipoPagamento.getSaldo() == \old(tipoPagamento.getSaldo())+valor;
+    */
     public void insereMoeda(double valor) throws PagamentoException{
         parquimetro.inserirMoeda(valor);
     }
     
-    public double getSaldoMaquina(){
+    /*@ requires tipoPagamento.getTipo() == "Pagamento em moedas";
+      @ ensures \result tipoPagamento.getSaldo();
+    */
+    public /*@ pure @*/ double getSaldoMaquina(){
         return parquimetro.getCoinCollector().getSaldo();
     }
 }

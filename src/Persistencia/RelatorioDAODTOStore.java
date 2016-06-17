@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class RelatorioDAODTOStore implements RelatorioDAO, Serializable{
     
-    private final ArrayList<TicketDTO> listaTickets;
+    private /*@ non_null @*/ final ArrayList<TicketDTO> listaTickets;
     
     public RelatorioDAODTOStore(){
         listaTickets = new ArrayList<>();

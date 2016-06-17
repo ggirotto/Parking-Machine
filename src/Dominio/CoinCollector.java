@@ -9,14 +9,21 @@ import java.util.List;
 public class CoinCollector implements IPagamento{
     private double saldo;
     private double saldoOperacao;
-    private final String tipo = "Pagamento em moedas";
+    private /*@ non_null @*/ final String tipo = "Pagamento em moedas";
     private final HashMap<EnumCoin, Integer> listaMoedas = new HashMap<>();
     
+    /*@ ensures saldo == 0;
+      @ ensures saldoOperacao == 0;
+    @*/
     public CoinCollector(){
         saldo = 0;
         saldoOperacao = 0;
     }
     
+    /*@ requires valor == 0.05 ||  valor == 0.1 ||  valor == 0.25 ||  valor == 0.5 ||  valor == 1.0;
+      @ requires listaMoedas != null;
+      @ ensures getSaldo() == \old(getSaldo()-valor);
+    @*/
     private void retiraMoeda(double valor) throws PagamentoException {
         
         EnumCoin enumerador = null;
@@ -58,6 +65,9 @@ public class CoinCollector implements IPagamento{
         Assim que o ticket é impresso e a operação finalizada, o saldoOperacao
         É acumulado no saldo total da máquina e depois zerado
     */
+    /*@ ensures saldo == \old(getSaldo()) + saldoOperacao;
+      @ ensures saldoOperacao == 0;
+    @*/
     private void arrumaSaldo(){
         saldo += saldoOperacao;
         saldoOperacao = 0;
@@ -67,6 +77,10 @@ public class CoinCollector implements IPagamento{
         Verifica se o saldo da operação está de acordo
         com a valor que necessita ser pago
     */
+    /*@ requires valorNecessario >= 0.75 && valorNecessario <= 3.0;
+      @ ensures \result >= 0;
+      @ signals (PagamentoException e) saldoOperacao < valorNecessario;
+    @*/
     public double verificaValorPago(double valorNecessario) throws PagamentoException{
         double troco = 0;
         if(saldoOperacao < valorNecessario) throw new PagamentoException("Valor Pago insuficiente!");
@@ -76,7 +90,11 @@ public class CoinCollector implements IPagamento{
         arrumaSaldo();
         return troco;
     }
-
+    
+    /*@ requires valor == 0.05 ||  valor == 0.1 ||  valor == 0.25 ||  valor == 0.5 ||  valor == 1.0;
+      @ requires listaMoedas != null;
+      @ ensures saldoOperacao == \old(saldoOperacao)+valor;
+    @*/
     public void insereMoeda(double valor) throws PagamentoException{
         
         EnumCoin enumerador = null;
@@ -130,6 +148,7 @@ public class CoinCollector implements IPagamento{
         Se a máquina não possui moedas suficientes, retira o maior
         valor possível menor que a variável -valor-
     */
+    /*@ requires valor >= 0; @*/
     public double getTroco(double valor) throws PagamentoException {
         double troco = 0;
         

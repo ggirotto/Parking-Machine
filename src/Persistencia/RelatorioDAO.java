@@ -4,8 +4,8 @@ import TicketDTO.TicketDTO;
 import java.io.IOException;
 
 public interface RelatorioDAO {
-
-    public void armazenaTicket(TicketDTO t) throws RelatorioDAOException;
-    public void geraRelatorioParquimetro() throws RelatorioDAOException, IOException;
+    /*@ requires t != null; @ */
+    public /*@pure@*/ void armazenaTicket(TicketDTO t) throws RelatorioDAOException;
+    public /*@pure@*/ void geraRelatorioParquimetro() throws RelatorioDAOException, IOException;
     
 }
