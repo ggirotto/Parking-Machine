@@ -132,7 +132,7 @@ public class ParquimetroTest {
     @Test
     public void simulaUsoDoCartao() throws Exception{
         
-        CartaoRecarregavel cartao = new CartaoRecarregavel();
+        CartaoRecarregavel cartao = new CartaoRecarregavel("1");
         cartao.deposita(3);
         LocalDateTime saida = LocalDateTime.now().plusMinutes(120);
         Facade fachada = Facade.getInstance(LocalDateTime.now(),saida);
@@ -146,7 +146,7 @@ public class ParquimetroTest {
     @Test(expected = PagamentoException.class)
     public void simulaUsoDoCartaoComSaldoInsuficiente() throws Exception{
         
-        CartaoRecarregavel cartao = new CartaoRecarregavel();
+        CartaoRecarregavel cartao = new CartaoRecarregavel("2");
         cartao.deposita(2);
         LocalDateTime saida = LocalDateTime.now().plusMinutes(120);
         Facade fachada = Facade.getInstance(LocalDateTime.now(),saida);
@@ -158,7 +158,7 @@ public class ParquimetroTest {
     @Test(expected = PagamentoException.class)
     public void simulaUsoDoCartaoComSaldoInsuficientePor1Centavo() throws Exception{
         
-        CartaoRecarregavel cartao = new CartaoRecarregavel();
+        CartaoRecarregavel cartao = new CartaoRecarregavel("3");
         cartao.deposita(2.99);
         LocalDateTime saida = LocalDateTime.now().plusMinutes(120);
         Facade fachada = Facade.getInstance(LocalDateTime.now(),saida);
@@ -170,7 +170,7 @@ public class ParquimetroTest {
     @Test
     public void simulaUsoDoCartaoComSaldoSuperior() throws Exception{
         
-        CartaoRecarregavel cartao = new CartaoRecarregavel();
+        CartaoRecarregavel cartao = new CartaoRecarregavel("4");
         cartao.deposita(10);
         LocalDateTime saida = LocalDateTime.now().plusMinutes(120);
         Facade fachada = Facade.getInstance(LocalDateTime.now(),saida);

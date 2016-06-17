@@ -1,19 +1,15 @@
 package Dominio;
 
-import java.util.Random;
-
 public class CartaoRecarregavel implements IPagamento{
-    private String identificacao = "";
+    private final String identificacao;
     private double saldo;
     private final String tipo = "Cartao recarregavel";
     
-    public CartaoRecarregavel(){
-        /*
-            Cria uma identificacao aleatória de 128 caracteres para o cartão
-        */
-        Random randomGenerator = new Random();
-        for(int i=0; i<128; i++)
-            identificacao += randomGenerator.nextInt(9);
+    public CartaoRecarregavel(String id) throws PagamentoException{
+        if(id.length() != 120){
+            throw new PagamentoException("O ID do cartão deve possuir 128 caracteres");
+        }
+        identificacao = id;
     }
     
     public void desconta(double valor) throws PagamentoException{

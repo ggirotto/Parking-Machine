@@ -93,7 +93,7 @@ public class Parquimetro {
     /*
         Calcula o valor a ser pago a partir do tempo de estadia
     */
-    public double calculaValorNecessario(LocalDateTime chegada, LocalDateTime saida){
+    private double calculaValorNecessario(LocalDateTime chegada, LocalDateTime saida){
         
         int diferencaTempo = diferencaTempo(chegada,saida);
         double valorInicial = valorMinimo;

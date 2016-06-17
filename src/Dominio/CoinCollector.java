@@ -17,7 +17,7 @@ public class CoinCollector implements IPagamento{
         saldoOperacao = 0;
     }
     
-    public void retiraMoeda(double valor) throws PagamentoException {
+    private void retiraMoeda(double valor) throws PagamentoException {
         
         EnumCoin enumerador = null;
         /*
@@ -58,7 +58,7 @@ public class CoinCollector implements IPagamento{
         Assim que o ticket é impresso e a operação finalizada, o saldoOperacao
         É acumulado no saldo total da máquina e depois zerado
     */
-    public void arrumaSaldo(){
+    private void arrumaSaldo(){
         saldo += saldoOperacao;
         saldoOperacao = 0;
     }
