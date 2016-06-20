@@ -1,6 +1,5 @@
 package Testes;
 
-import org.junit.Before;
 import org.junit.Test;
 import Dominio.*;
 import java.time.LocalDateTime;

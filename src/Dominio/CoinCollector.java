@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class CoinCollector implements IPagamento{
-    private double saldo;
-    private double saldoOperacao;
+    private /*@spec_public@*/ double saldo;
+    private /*@spec_public@*/ double saldoOperacao;
     private /*@ non_null @*/ final String tipo = "Pagamento em moedas";
-    private final HashMap<EnumCoin, Integer> listaMoedas = new HashMap<>();
+    private /*@spec_public@*/ final HashMap<EnumCoin, Integer> listaMoedas = new HashMap<EnumCoin, Integer>();
     
     /*@ ensures saldo == 0;
       @ ensures saldoOperacao == 0;
@@ -152,7 +152,7 @@ public class CoinCollector implements IPagamento{
     public double getTroco(double valor) throws PagamentoException {
         double troco = 0;
         
-        List<EnumCoin> moedas = new ArrayList<>();
+        List<EnumCoin> moedas = new ArrayList<EnumCoin>();
         
         moedas.addAll(Arrays.asList(EnumCoin.values()));
         Collections.reverse(moedas);

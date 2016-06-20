@@ -6,7 +6,6 @@ import Dominio.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -68,6 +67,7 @@ public class ParquimetroTestesComCartao {
         Ticket t = f.geraTicket(valorNecessario);
         assertNotNull(t);
         assertEquals(saldo-valorNecessario,cartao.getSaldo(),0.0f);
+        f.geraLogParquimetro();
         
     }
     

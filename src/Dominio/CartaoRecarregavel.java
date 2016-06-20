@@ -1,13 +1,13 @@
 package Dominio;
 
 public class CartaoRecarregavel implements IPagamento{
-    private /*@ non_null @*/ final String identificacao;
-    private double saldo;
-    private /*@ non_null @*/ final String tipo = "Cartao recarregavel";
+    private /*@ spec_public @*/ /*@ non_null @*/ final String identificacao;
+    private /*@ spec_public @*/ double saldo;
+    private /*@ spec_public @*/ /*@ non_null @*/ final String tipo = "Cartao recarregavel";
     
     /*@ requires id != null;
       @ signals (PagamentoException e) id.length() != 128;
-      @ ensures identificacao.length > \old(identificacao.length);
+      @ ensures identificacao.length() == 128;
     @*/
     public CartaoRecarregavel(String id) throws PagamentoException{
         if(id.length() != 128){

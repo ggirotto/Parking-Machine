@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 
 public class Facade {
     
-    private /*@ non_null @*/ IPagamento tipoPagamento;
-    private /*@ non_null @*/ final Parquimetro parquimetro;
-    private /*@ non_null @*/ static LocalDateTime chegada;
-    private /*@ non_null @*/ static LocalDateTime saida;
+    private /*@ spec_public @*/ /*@ non_null @*/ IPagamento tipoPagamento;
+    private /*@ spec_public @*/ /*@ non_null @*/ final Parquimetro parquimetro;
+    private /*@ spec_public @*/ /*@ non_null @*/ static LocalDateTime chegada;
+    private /*@ spec_public @*/ /*@ non_null @*/ static LocalDateTime saida;
     private CartaoRecarregavel cartao = null;
-    private /*@ non_null @*/ static Facade facade = null;
+    private /*@ spec_public @*/ /*@ non_null @*/ static Facade facade = null;
     
     /*@ requires chegada != null && saida != null;
       @ ensures \result == facade;
@@ -33,9 +33,8 @@ public class Facade {
         facade = null;
     }
     
-    /*@ requires chegada != null && requires saida != null;
-      @ ensures !(chegada.equals(\old(chegada)));
-      @ ensures !(saida.equals(\old(saida)));
+    /*@ ensures chegada != \old(chegada);
+      @ ensures saida != \old(saida);
       @ ensures parquimetro != null;
       @ ensures tipoPagamento != null;
       @ ensures tipoPagamento.getTipo() == "Pagamento em moedas";
@@ -48,7 +47,6 @@ public class Facade {
     }
     
     /*@ requires card != null;
-      @ ensures tipoPagamento != null;
       @ ensures tipoPagamento.getTipo() == "Cartao recarregavel";
     @*/
     public void cartaoInserido(CartaoRecarregavel card){
@@ -82,7 +80,7 @@ public class Facade {
     }
     
     /*@ requires tipoPagamento.getTipo() == "Pagamento em moedas";
-      @ ensures \result tipoPagamento.getSaldo();
+      @ ensures \result == tipoPagamento.getSaldo();
     */
     public /*@ pure @*/ double getSaldoMaquina(){
         return parquimetro.getCoinCollector().getSaldo();

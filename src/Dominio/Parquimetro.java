@@ -12,13 +12,13 @@ public class Parquimetro {
     private /*@ non_null @*/ final LocalDateTime inicioTarifa = LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 30));
     private /*@ non_null @*/ final LocalDateTime fimTarifa = LocalDateTime.of(LocalDate.now(), LocalTime.of(18, 30));
     private /*@ non_null @*/ final LocalTime tempoMinimo = LocalTime.of(0, 30);
-    private /*@ non_null @*/  final LocalTime tempoMaximo = LocalTime.of(2, 00);
+    private /*@ non_null @*/ final LocalTime tempoMaximo = LocalTime.of(2, 00);
     private /*@ non_null @*/ final LocalTime tempoIncremento = LocalTime.of(0, 10);
     private /*@ non_null @*/ final double valorMinimo = 0.75;
     private /*@ non_null @*/ final double valorMaximo = 3.0;
     private /*@ non_null @*/ final double valorIncremento = 0.25;
-    private /*@ non_null @*/ final AdaptadorNegocioPersistencia adapter;
-    private /*@ non_null @*/ final CoinCollector coinMachine;
+    private /*@ spec_public @*/ /*@ non_null @*/ final AdaptadorNegocioPersistencia adapter;
+    private /*@ spec_public @*/ /*@ non_null @*/ final CoinCollector coinMachine;
     
     /*@ ensures adapter != null;
       @ ensures coinMachine != null;
@@ -29,7 +29,7 @@ public class Parquimetro {
     }
     
     /*@ requires valor == 0.05 ||  valor == 0.1 ||  valor == 0.25 ||  valor == 0.5 ||  valor == 1.0;
-      @ ensures tipoPagamento.getSaldo() == \old(tipoPagamento.getSaldo())+valor;
+      @ ensures coinMachine.getSaldo() == \old(coinMachine.getSaldo())+valor;
     */
     public void inserirMoeda(double valor) throws PagamentoException{
         coinMachine.insereMoeda(valor);
@@ -38,20 +38,21 @@ public class Parquimetro {
     /*
         Gera e imprime o ticket
     */
-    /*@ requires chegada.getDayOfYear == LocalDate.now().getDayOfYear();
-      @ requires saida.getDayOfYear == LocalDate.now().getDayOfYear();
+    /*@ requires chegada.getDayOfYear() == LocalDate.now().getDayOfYear();
+      @ requires saida.getDayOfYear() == LocalDate.now().getDayOfYear();
       @ signals (ParquimetroException e) isTarifying() == false;
     @*/
     public Ticket geraTicket(LocalDateTime chegada, LocalDateTime saida, IPagamento tipoPagamento, 
                              double valorPago) throws ParquimetroException, TicketException{
 
         Ticket t;
-        //if(isTarifying()){
+        if(isTarifying()){
             verificaTempoEstadia(chegada, saida);
             t = new Ticket(saida,identificacao,endereco);
-        //} else throw new ParquimetroException("O parquimetro não está operando");
-        armazenaTicket(t,tipoPagamento,valorPago);
-        return t;
+            armazenaTicket(t,tipoPagamento,valorPago);
+            return t;
+        }
+        return new Ticket(saida,identificacao,endereco);
         
     }
     
@@ -67,7 +68,7 @@ public class Parquimetro {
             adapter.armazenaTicket(t, tipoPagamento, valorPago);
             
         }catch(Exception e) {
-            throw new ParquimetroException("Erro na hora de armazena o ticket");
+            throw new ParquimetroException("Erro na hora de armazenar o ticket");
         }
         
     }
@@ -82,7 +83,7 @@ public class Parquimetro {
             adapter.geraRelatorioParquimetro();
             
         }catch(Exception e) {
-            throw new ParquimetroException("Erro na hora de armazena o ticket");
+            throw new ParquimetroException("Erro na hora de gerar o log do parquimetro");
         }
         
     }
@@ -96,8 +97,8 @@ public class Parquimetro {
         (se o saldo for insuficiente, é tratado no método desconta da classe cartao)
     */
     
-    /*@ requires chegada.getDayOfYear == LocalDate.now().getDayOfYear();
-      @ requires saida.getDayOfYear == LocalDate.now().getDayOfYear();
+    /*@ requires chegada.getDayOfYear() == LocalDate.now().getDayOfYear();
+      @ requires saida.getDayOfYear() == LocalDate.now().getDayOfYear();
     @*/
     public void registraPagamento(LocalDateTime chegada, LocalDateTime saida,
                                     double valorPago, IPagamento tipoPagamento) throws PagamentoException{
@@ -113,8 +114,8 @@ public class Parquimetro {
     */
     /*@ requires chegada != null;
       @ requires saida != null;
-      @ requires chegada.getDayOfYear == LocalDate.now().getDayOfYear();
-      @ requires saida.getDayOfYear == LocalDate.now().getDayOfYear();
+      @ requires chegada.getDayOfYear() == LocalDate.now().getDayOfYear();
+      @ requires saida.getDayOfYear() == LocalDate.now().getDayOfYear();
       @ ensures \result >= 0.75 && \result <= 3.0;
     @*/
     private double calculaValorNecessario(LocalDateTime chegada, LocalDateTime saida){
@@ -132,8 +133,8 @@ public class Parquimetro {
     */
     /*@ requires chegada != null;
       @ requires saida != null;
-      @ requires chegada.getDayOfYear == LocalDate.now().getDayOfYear();
-      @ requires saida.getDayOfYear == LocalDate.now().getDayOfYear();
+      @ requires chegada.getDayOfYear() == LocalDate.now().getDayOfYear();
+      @ requires saida.getDayOfYear() == LocalDate.now().getDayOfYear();
     @*/
     private void verificaTempoEstadia(LocalDateTime chegada, LocalDateTime saida) throws ParquimetroException{
         
@@ -147,8 +148,8 @@ public class Parquimetro {
     */
     /*@ requires chegada != null;
       @ requires saida != null;
-      @ requires chegada.getDayOfYear == LocalDate.now().getDayOfYear();
-      @ requires saida.getDayOfYear == LocalDate.now().getDayOfYear();
+      @ requires chegada.getDayOfYear() == LocalDate.now().getDayOfYear();
+      @ requires saida.getDayOfYear() == LocalDate.now().getDayOfYear();
       @ ensures \result > 0;
     @*/
     private int diferencaTempo(LocalDateTime chegada, LocalDateTime saida){
@@ -164,7 +165,7 @@ public class Parquimetro {
     /*@ ensures \result == true ==> LocalDateTime.now().isAfter(inicioTarifa) && LocalDateTime.now().isBefore(fimTarifa);
       @ ensures \result == false ==> LocalDateTime.now().isBefore(inicioTarifa) && LocalDateTime.now().isAfter(fimTarifa);
     @*/
-    private boolean isTarifying(){
+    private /*@ pure @*/ /*@ spec_public @*/ boolean isTarifying(){
         
         return LocalDateTime.now().isAfter(inicioTarifa) && LocalDateTime.now().isBefore(fimTarifa);
         
