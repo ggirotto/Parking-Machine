@@ -7,6 +7,11 @@ import static org.junit.Assert.*;
 
 public class TestesNaoParametrizados {
     
+    @Before
+    public void zeraFachada(){
+        Facade.getInstance(LocalDateTime.MAX, LocalDateTime.MIN).voltaPadrao();
+    }
+    
     @Test(expected = PagamentoException.class)
     public void testInsereMoedaErrada() throws PagamentoException{
         Facade f = Facade.getInstance(LocalDateTime.now(),LocalDateTime.now());
@@ -110,7 +115,7 @@ public class TestesNaoParametrizados {
         
         t = fachada.geraTicket(2.5);
         assertNotNull(t);
-        assertEquals(2.50f,fachada.getSaldoMaquina(),0.0f);
+        assertEquals(3.0f,fachada.getSaldoMaquina(),0.0f);
         
     }
     
@@ -132,7 +137,7 @@ public class TestesNaoParametrizados {
     @Test
     public void simulaUsoDoCartao() throws Exception{
         
-        CartaoRecarregavel cartao = new CartaoRecarregavel("1");
+        CartaoRecarregavel cartao = new CartaoRecarregavel("01234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768");
         cartao.deposita(3);
         LocalDateTime saida = LocalDateTime.now().plusMinutes(120);
         Facade fachada = Facade.getInstance(LocalDateTime.now(),saida);
@@ -146,7 +151,7 @@ public class TestesNaoParametrizados {
     @Test(expected = PagamentoException.class)
     public void simulaUsoDoCartaoComSaldoInsuficiente() throws Exception{
         
-        CartaoRecarregavel cartao = new CartaoRecarregavel("2");
+        CartaoRecarregavel cartao = new CartaoRecarregavel("01234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768");
         cartao.deposita(2);
         LocalDateTime saida = LocalDateTime.now().plusMinutes(120);
         Facade fachada = Facade.getInstance(LocalDateTime.now(),saida);
@@ -170,7 +175,7 @@ public class TestesNaoParametrizados {
     @Test
     public void simulaUsoDoCartaoComSaldoSuperior() throws Exception{
         
-        CartaoRecarregavel cartao = new CartaoRecarregavel("4");
+        CartaoRecarregavel cartao = new CartaoRecarregavel("01234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768");
         cartao.deposita(10);
         LocalDateTime saida = LocalDateTime.now().plusMinutes(120);
         Facade fachada = Facade.getInstance(LocalDateTime.now(),saida);

@@ -55,7 +55,7 @@ public class ParquimetroTestesComCartao {
     
     @Before
     public void zeraFacade(){
-        f.zeraFacade();
+        f.voltaPadrao();
     }
     
     @Test
@@ -67,7 +67,6 @@ public class ParquimetroTestesComCartao {
         Ticket t = f.geraTicket(valorNecessario);
         assertNotNull(t);
         assertEquals(saldo-valorNecessario,cartao.getSaldo(),0.0f);
-        f.geraLogParquimetro();
         
     }
     

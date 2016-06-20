@@ -17,7 +17,7 @@ public class ParquimetroTestesComMoedas {
     
     private final LocalDateTime chegada;
     private final int saida;
-    private final Facade f;
+    private static Facade f;
     private final List<Double> moedas;
 
     @Parameters
@@ -69,7 +69,7 @@ public class ParquimetroTestesComMoedas {
     
     @Before
     public void zeraFacade(){
-        f.zeraFacade();
+        f.voltaPadrao();
     }
     
     @Test
@@ -85,6 +85,10 @@ public class ParquimetroTestesComMoedas {
         Ticket t = f.geraTicket(cont);
         assertNotNull(t);
         assertEquals(cont,f.getSaldoMaquina(),0.0f);
+        
+    }
+    
+    public static void geraRelatorio() throws Exception{
         f.geraLogParquimetro();
     }
     

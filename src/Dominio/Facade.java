@@ -28,9 +28,10 @@ public class Facade {
         
     }
     
-    /*@ ensures facade == null; @*/
-    public void zeraFacade(){
-        facade = null;
+    public void voltaPadrao(){
+        parquimetro.getCoinCollector().zeraSaldo();
+        cartao = null;
+        tipoPagamento = parquimetro.getCoinCollector();
     }
     
     /*@ ensures chegada != \old(chegada);
