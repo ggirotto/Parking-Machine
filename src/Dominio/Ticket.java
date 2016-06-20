@@ -13,7 +13,7 @@ public class Ticket {
     private static int SERIAL_CONT = 0;
     private static LocalDate serialController = LocalDate.now();
     
-    public Ticket(LocalDateTime newSaida, String newParqId, String newParqAddress) throws TicketException{
+    public Ticket(LocalDateTime newChegada, LocalDateTime newSaida, String newParqId, String newParqAddress) throws TicketException{
         
         /*
             Verifica se trocou o dia, se sim, zera o número de serial
@@ -23,7 +23,7 @@ public class Ticket {
             serialController = LocalDate.now();
         }
         serial = calculaSerial();
-        chegada = LocalDateTime.now();
+        chegada = newChegada;
         saida = newSaida;
         parqId = newParqId;
         parqAddress = newParqAddress;

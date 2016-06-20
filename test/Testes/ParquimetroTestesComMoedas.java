@@ -33,7 +33,7 @@ public class ParquimetroTestesComMoedas {
             {LocalDateTime.now(),100,Arrays.asList(1.0, 1.0, 0.5)},
             {LocalDateTime.now(),110,Arrays.asList(1.0, 1.0, 0.5, 0.25)},
             {LocalDateTime.now(),120,Arrays.asList(1.0, 1.0, 1.0)},
-            {LocalDateTime.of(1997,1,21,8,10),30,Arrays.asList(0.25, 0.25, 0.25)},
+            {LocalDateTime.of(1997,1,21,8,50),30,Arrays.asList(0.25, 0.25, 0.25)},
             {LocalDateTime.of(1998,2,25,9,00),50,Arrays.asList(0.5, 0.5, 0.25)},
             {LocalDateTime.of(1999,3,26,10,20),100,Arrays.asList(1.0, 1.0, 0.5)},
             {LocalDateTime.of(2001,5,29,11,30),40,Arrays.asList(0.5, 0.5)},
@@ -54,8 +54,8 @@ public class ParquimetroTestesComMoedas {
             {LocalDateTime.of(1997,1,16,16,30),30,Arrays.asList(0.25, 0.25, 0.25)},
             {LocalDateTime.of(1998,4,17,17,40),120,Arrays.asList(1.0, 1.0, 1.0)},
             {LocalDateTime.of(1999,8,18,12,50),120,Arrays.asList(1.0, 1.0, 1.0)},
-            {LocalDateTime.of(2000,10,10,18,50),110,Arrays.asList(1.0, 1.0, 0.5, 0.25)},
-            {LocalDateTime.of(200,11,11,12,10),100,Arrays.asList(1.0, 1.0, 0.5)},
+            {LocalDateTime.of(2000,10,10,18,30),110,Arrays.asList(1.0, 1.0, 0.5, 0.25)},
+            {LocalDateTime.of(2000,11,11,12,10),100,Arrays.asList(1.0, 1.0, 0.5)},
         });
         return retorno;
     }
@@ -74,6 +74,7 @@ public class ParquimetroTestesComMoedas {
     
     @Test
     public void TestesComMoedas() throws PagamentoException, ParquimetroException, TicketException{
+        double saldoAnterior = f.getSaldoMaquina();
         
         double cont = 0;
         for(double d : moedas){
@@ -84,7 +85,7 @@ public class ParquimetroTestesComMoedas {
         
         Ticket t = f.geraTicket(cont);
         assertNotNull(t);
-        assertEquals(cont,f.getSaldoMaquina(),0.0f);
+        assertEquals(saldoAnterior+cont,f.getSaldoMaquina(),0.0f);
         
     }
     

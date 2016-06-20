@@ -48,11 +48,11 @@ public class Parquimetro {
         Ticket t;
         if(isTarifying()){
             verificaTempoEstadia(chegada, saida);
-            t = new Ticket(saida,identificacao,endereco);
+            t = new Ticket(chegada,saida,identificacao,endereco);
             armazenaTicket(t,tipoPagamento,valorPago);
             return t;
         }
-        return new Ticket(saida,identificacao,endereco);
+        return new Ticket(chegada,saida,identificacao,endereco);
         
     }
     
