@@ -160,8 +160,8 @@ public class CoinCollector implements IPagamento{
             for(EnumCoin coin : moedas){
                 if(listaMoedas.get(coin) != null && listaMoedas.get(coin)>0 && valor>= coin.getValor()){
                     retiraMoeda(coin.getValor());
-                    troco += 1;
-                    valor -= 1;
+                    troco += coin.getValor();
+                    valor -= coin.getValor();
                 }
             }
         

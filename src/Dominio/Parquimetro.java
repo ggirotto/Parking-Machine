@@ -122,12 +122,21 @@ public class Parquimetro {
     @*/
     private double calculaValorNecessario(LocalDateTime chegada, LocalDateTime saida){
         
-        int diferencaTempo = diferencaTempo(chegada,saida);
+        int diferencaTempo = diferencaTempo(chegada.toLocalTime(),saida.toLocalTime());
+        if(saida.toLocalTime().isAfter(fimTarifa)) {
+            diferencaTempo = diferencaTempo(chegada.toLocalTime(),fimTarifa);
+            if(diferencaTempo < emMinutos(tempoMinimo)) return valorMinimo;
+        }
+        
         double valorInicial = valorMinimo;
-        int diferenca = (diferencaTempo - 30)/10;
+        int diferenca = (diferencaTempo - emMinutos(tempoMinimo))/10;
         valorInicial += valorIncremento*diferenca;
         return valorInicial;
         
+    }
+    
+    private int emMinutos(LocalTime tempo){
+        return (tempo.getHour()*60) + tempo.getMinute();
     }
     
     /*
@@ -140,9 +149,9 @@ public class Parquimetro {
     @*/
     private void verificaTempoEstadia(LocalDateTime chegada, LocalDateTime saida) throws ParquimetroException{
         
-            int diferencaTempo = diferencaTempo(chegada, saida);
-            if(diferencaTempo > ((tempoMaximo.getHour()*60) + tempoMaximo.getMinute())) throw new ParquimetroException("Tempo de estadia além do tempo máximo");
-            if(diferencaTempo < ((tempoMinimo.getHour()*60) + tempoMinimo.getMinute())) throw new ParquimetroException("Tempo de estadia menor do que o tempo minimo");
+            int diferencaTempo = diferencaTempo(chegada.toLocalTime(), saida.toLocalTime());
+            if(diferencaTempo > emMinutos(tempoMaximo)) throw new ParquimetroException("Tempo de estadia além do tempo máximo");
+            if(diferencaTempo < emMinutos(tempoMinimo)) throw new ParquimetroException("Tempo de estadia menor do que o tempo minimo");
  
     }
     /*
@@ -154,10 +163,9 @@ public class Parquimetro {
       @ requires saida.getDayOfYear() == LocalDate.now().getDayOfYear();
       @ ensures \result > 0;
     @*/
-    private int diferencaTempo(LocalDateTime chegada, LocalDateTime saida){
+    private int diferencaTempo(LocalTime chegada, LocalTime saida){
         
-        return ((saida.getHour() * 60) + saida.getMinute()) -
-                        ((chegada.getHour() * 60) + chegada.getMinute());
+        return emMinutos(saida) - emMinutos(chegada);
         
     }
     

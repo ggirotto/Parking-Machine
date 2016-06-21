@@ -58,9 +58,6 @@ public class Facade {
         tipoPagamento = card;
     }
     
-    /*
-        Gera e imprime o ticket
-    */
     /*@ requires valorPago > 0;
       @ signals (PagamentoException e) valorPago <= 0;
     */
@@ -69,9 +66,6 @@ public class Facade {
         return parquimetro.geraTicket(chegada, saida,tipoPagamento,valorPago);
     }
     
-    /*
-        Gera o log do parquimetro com todas as informações necessárias
-    */
     public /*@ pure @*/ void geraLogParquimetro() throws ParquimetroException{
         parquimetro.geraLogParquimetro();
     }
