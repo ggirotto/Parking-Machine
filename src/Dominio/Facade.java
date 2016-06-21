@@ -80,7 +80,7 @@ public class Facade {
       @ ensures tipoPagamento.getSaldo() == \old(tipoPagamento.getSaldo())+valor;
     */
     public void insereMoeda(double valor) throws PagamentoException{
-        parquimetro.inserirMoeda(chegada,saida,valor);
+        parquimetro.inserirMoeda(chegada,valor);
     }
     
     /*@ requires tipoPagamento.getTipo() == "Pagamento em moedas";

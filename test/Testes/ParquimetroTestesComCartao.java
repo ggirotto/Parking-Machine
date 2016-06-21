@@ -4,8 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import Dominio.*;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Random;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -14,43 +15,57 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class ParquimetroTestesComCartao {
     
-    private final LocalDateTime saida;
     private final Facade f;
     private final double saldo;
     private final double valorNecessario;
     
     @Parameters
     public static Collection data() {
-        Collection retorno = Arrays.asList(new Object[][]{
-            {LocalDateTime.now().plusMinutes(30),10,0.75},
-            {LocalDateTime.now().plusMinutes(40),10,1.0},
-            {LocalDateTime.now().plusMinutes(50),10,1.25},
-            {LocalDateTime.now().plusMinutes(60),10,1.5},
-            {LocalDateTime.now().plusMinutes(70),10,1.75},
-            {LocalDateTime.now().plusMinutes(80),10,2.0},
-            {LocalDateTime.now().plusMinutes(90),10,2.25},
-            {LocalDateTime.now().plusMinutes(100),10,2.5},
-            {LocalDateTime.now().plusMinutes(110),10,2.75},
-            {LocalDateTime.now().plusMinutes(120),10,3.0},
-            {LocalDateTime.now().plusMinutes(30),0.75,0.75},
-            {LocalDateTime.now().plusMinutes(40),1.0,1.0},
-            {LocalDateTime.now().plusMinutes(50),1.25,1.25},
-            {LocalDateTime.now().plusMinutes(60),1.5,1.5},
-            {LocalDateTime.now().plusMinutes(70),1.75,1.75},
-            {LocalDateTime.now().plusMinutes(80),2.0,2.0},
-            {LocalDateTime.now().plusMinutes(90),2.25,2.25},
-            {LocalDateTime.now().plusMinutes(100),2.5,2.5},
-            {LocalDateTime.now().plusMinutes(110),2.75,2.75},
-            {LocalDateTime.now().plusMinutes(120),3.0,3.0}
-        });        
+        
+        Collection retorno = new ArrayList<>();
+        
+        for(int i=0; i<= 100; i++){
+            
+            Random r = new Random();
+            
+            int saldo = r.nextInt(15-10)+10;
+            
+            int minuto = r.nextInt(51-10)+10;
+            while(minuto%10 != 0) minuto = r.nextInt(51-0)+0;
+            
+            int tempo = r.nextInt(121-30)+30;
+            while(tempo%10 != 0) tempo = r.nextInt(121-30)+30;
+            
+            double valorNecessario = 0;
+            
+            if(tempo == 30) valorNecessario = 0.75;
+            if(tempo == 40) valorNecessario = 1.0;
+            if(tempo == 50) valorNecessario = 1.25;
+            if(tempo == 60) valorNecessario = 1.50;
+            if(tempo == 70) valorNecessario = 1.75;
+            if(tempo == 80) valorNecessario = 2.00;
+            if(tempo == 90) valorNecessario = 2.25;
+            if(tempo == 100) valorNecessario = 2.50;
+            if(tempo == 110) valorNecessario = 2.75;
+            if(tempo == 120) valorNecessario = 3.0;
+            
+            LocalDateTime randomData = LocalDateTime.of(r.nextInt(2017-1997)+1997
+                                                    ,r.nextInt(13-1)+1
+                                                    ,r.nextInt(29-1)+1
+                                                    ,r.nextInt(24-0)+0
+                                                    ,minuto);
+            
+            retorno.add(new Object[]{randomData, tempo ,saldo ,valorNecessario});
+        }
         return retorno;
     }
     
-    public ParquimetroTestesComCartao(LocalDateTime saida, double saldo, double valorNecessario) {
-        this.saida = saida;
-        this.f = Facade.getInstance(LocalDateTime.now(),saida);
+    public ParquimetroTestesComCartao(LocalDateTime chegada, int saida, double saldo, double valorNecessario) {
+        
+        this.f = Facade.getInstance(chegada,chegada.plusMinutes(saida));
         this.saldo = saldo;
         this.valorNecessario = valorNecessario;
+        
     }
     
     @Before
@@ -60,13 +75,13 @@ public class ParquimetroTestesComCartao {
     
     @Test
     public void TesteComCartao() throws Exception{
-        
+        System.out.println("Saldo: "+saldo+" - Valor: "+valorNecessario);
         CartaoRecarregavel cartao = new CartaoRecarregavel("01234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768");
         cartao.deposita(saldo);
         f.cartaoInserido(cartao);
         Ticket t = f.geraTicket(valorNecessario);
-        assertNotNull(t);
-        assertEquals(saldo-valorNecessario,cartao.getSaldo(),0.0f);
+        if(t!=null)
+            assertEquals(saldo-valorNecessario,cartao.getSaldo(),0.0f);
         
     }
     
