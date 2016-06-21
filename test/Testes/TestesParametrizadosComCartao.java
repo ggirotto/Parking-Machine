@@ -77,12 +77,12 @@ public class TestesParametrizadosComCartao {
     }
     
     @Before
-    private void zeraFacade(){
+    public void zeraFacade(){
         f.voltaPadrao();
     }
     
     @Test
-    private void TesteComCartao() throws PagamentoException, ParquimetroException, TicketException{
+    public void TesteComCartao() throws PagamentoException, ParquimetroException, TicketException{
         
         System.out.println("Saldo: "+saldo+" - Valor: "+valorNecessario);
         CartaoRecarregavel cartao = new CartaoRecarregavel("01234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768");
