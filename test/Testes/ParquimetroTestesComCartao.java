@@ -42,7 +42,7 @@ public class ParquimetroTestesComCartao {
             {LocalDateTime.now().plusMinutes(100),2.5,2.5},
             {LocalDateTime.now().plusMinutes(110),2.75,2.75},
             {LocalDateTime.now().plusMinutes(120),3.0,3.0}
-        });
+        });        
         return retorno;
     }
     

@@ -40,7 +40,7 @@ public class CoinCollector implements IPagamento{
         /*
             Se não achou, não existe moeda com este valor
         */
-        if(enumerador == null) throw new PagamentoException("Moeda inválida");
+        if(enumerador == null) throw new PagamentoException("Moeda " + valor + " inválida");
         
         /*
             Se achou porém ela não existe na lista de moedas, ela é válida
@@ -112,7 +112,7 @@ public class CoinCollector implements IPagamento{
         /*
             Se não achou, não existe moeda com este valor
         */
-        if(enumerador == null) throw new PagamentoException("Moeda inválida");
+        if(enumerador == null) throw new PagamentoException("Moeda " + valor + " inválida");
         
         /*
             Se achou porém ela não existe na lista de moedas, ela é válida
@@ -159,7 +159,7 @@ public class CoinCollector implements IPagamento{
 
             for(EnumCoin coin : moedas){
                 if(listaMoedas.get(coin) != null && listaMoedas.get(coin)>0 && valor>= coin.getValor()){
-                    retiraMoeda(valor);
+                    retiraMoeda(coin.getValor());
                     troco += 1;
                     valor -= 1;
                 }

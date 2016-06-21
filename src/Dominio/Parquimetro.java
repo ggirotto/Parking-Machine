@@ -1,6 +1,5 @@
 package Dominio;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -9,8 +8,8 @@ public class Parquimetro {
     
     private /*@ non_null @*/ final String identificacao = "00001";
     private /*@ non_null @*/ final String endereco = "Rua da Minha Casa, 321";
-    private /*@ non_null @*/ final LocalDateTime inicioTarifa = LocalDateTime.of(LocalDate.now(), LocalTime.of(8, 30));
-    private /*@ non_null @*/ final LocalDateTime fimTarifa = LocalDateTime.of(LocalDate.now(), LocalTime.of(18, 30));
+    private /*@ non_null @*/ final LocalTime inicioTarifa = LocalTime.of(8, 30);
+    private /*@ non_null @*/ final LocalTime fimTarifa = LocalTime.of(18, 30);
     private /*@ non_null @*/ final LocalTime tempoMinimo = LocalTime.of(0, 30);
     private /*@ non_null @*/ final LocalTime tempoMaximo = LocalTime.of(2, 00);
     private /*@ non_null @*/ final LocalTime tempoIncremento = LocalTime.of(0, 10);
@@ -31,8 +30,9 @@ public class Parquimetro {
     /*@ requires valor == 0.05 ||  valor == 0.1 ||  valor == 0.25 ||  valor == 0.5 ||  valor == 1.0;
       @ ensures coinMachine.getSaldo() == \old(coinMachine.getSaldo())+valor;
     */
-    public void inserirMoeda(double valor) throws PagamentoException{
-        coinMachine.insereMoeda(valor);
+    public void inserirMoeda(LocalDateTime chegada, LocalDateTime saida, double valor) throws PagamentoException{
+        if(isTarifying(chegada,saida))
+            coinMachine.insereMoeda(valor);
     }
     
     /*
@@ -46,7 +46,7 @@ public class Parquimetro {
                              double valorPago) throws ParquimetroException, TicketException{
 
         Ticket t;
-        if(isTarifying()){
+        if(isTarifying(chegada,saida)){
             verificaTempoEstadia(chegada, saida);
             t = new Ticket(chegada,saida,identificacao,endereco);
             armazenaTicket(t,tipoPagamento,valorPago);
@@ -102,11 +102,13 @@ public class Parquimetro {
     @*/
     public void registraPagamento(LocalDateTime chegada, LocalDateTime saida,
                                     double valorPago, IPagamento tipoPagamento) throws PagamentoException{
-        if(tipoPagamento instanceof CoinCollector){
-            ((CoinCollector)tipoPagamento).verificaValorPago(calculaValorNecessario(chegada,saida));
+        if(isTarifying(chegada,saida)){
+            if(tipoPagamento instanceof CoinCollector){
+                ((CoinCollector)tipoPagamento).verificaValorPago(calculaValorNecessario(chegada,saida));
+            }
+            else
+                ((CartaoRecarregavel)tipoPagamento).desconta(calculaValorNecessario(chegada, saida));
         }
-        else
-            ((CartaoRecarregavel)tipoPagamento).desconta(calculaValorNecessario(chegada, saida));
     }
     
     /*
@@ -138,10 +140,10 @@ public class Parquimetro {
     @*/
     private void verificaTempoEstadia(LocalDateTime chegada, LocalDateTime saida) throws ParquimetroException{
         
-        int diferencaTempo = diferencaTempo(chegada, saida);
-        if(diferencaTempo > 120) throw new ParquimetroException("Tempo de estadia além do tempo máximo");
-        if(diferencaTempo < 30) throw new ParquimetroException("Tempo de estadia menor do que o tempo minimo");
-        
+            int diferencaTempo = diferencaTempo(chegada, saida);
+            if(diferencaTempo > ((tempoMaximo.getHour()*60) + tempoMaximo.getMinute())) throw new ParquimetroException("Tempo de estadia além do tempo máximo");
+            if(diferencaTempo < ((tempoMinimo.getHour()*60) + tempoMinimo.getMinute())) throw new ParquimetroException("Tempo de estadia menor do que o tempo minimo");
+ 
     }
     /*
         Retorna a diferença de tempo em minutos entre a chegada e a hora de saida
@@ -165,9 +167,9 @@ public class Parquimetro {
     /*@ ensures \result == true ==> LocalDateTime.now().isAfter(inicioTarifa) && LocalDateTime.now().isBefore(fimTarifa);
       @ ensures \result == false ==> LocalDateTime.now().isBefore(inicioTarifa) && LocalDateTime.now().isAfter(fimTarifa);
     @*/
-    private /*@ pure @*/ /*@ spec_public @*/ boolean isTarifying(){
+    private /*@ pure @*/ /*@ spec_public @*/ boolean isTarifying(LocalDateTime chegada, LocalDateTime saida){
         
-        return LocalDateTime.now().isAfter(inicioTarifa) && LocalDateTime.now().isBefore(fimTarifa);
+        return chegada.toLocalTime().isAfter(inicioTarifa) && saida.toLocalTime().isBefore(fimTarifa);
         
     }
     
