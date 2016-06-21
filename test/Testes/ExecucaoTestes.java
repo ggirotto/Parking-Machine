@@ -11,11 +11,11 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ParquimetroTestesComMoedas.class, ParquimetroTestesComCartao.class })
-public class ExecucacaoTestes {
+@SuiteClasses({TestesParametrizadosComMoedas.class, TestesParametrizadosComCartao.class })
+public class ExecucaoTestes {
     
     @AfterClass
     public static void geraRelatorio() throws Exception{
-        ParquimetroTestesComMoedas.geraRelatorio();
+        TestesParametrizadosComMoedas.geraRelatorio();
     }
 }

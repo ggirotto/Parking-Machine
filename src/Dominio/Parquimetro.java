@@ -100,15 +100,17 @@ public class Parquimetro {
     /*@ requires chegada.getDayOfYear() == LocalDate.now().getDayOfYear();
       @ requires saida.getDayOfYear() == LocalDate.now().getDayOfYear();
     @*/
-    public void registraPagamento(LocalDateTime chegada, LocalDateTime saida,
+    public double registraPagamento(LocalDateTime chegada, LocalDateTime saida,
                                     double valorPago, IPagamento tipoPagamento) throws PagamentoException{
+        double troco = 0;
         if(isTarifying(chegada)){
             if(tipoPagamento instanceof CoinCollector){
-                ((CoinCollector)tipoPagamento).verificaValorPago(calculaValorNecessario(chegada,saida));
+                troco = ((CoinCollector)tipoPagamento).verificaValorPago(calculaValorNecessario(chegada,saida));
             }
             else
                 ((CartaoRecarregavel)tipoPagamento).desconta(calculaValorNecessario(chegada, saida));
         }
+        return troco;
     }
     
     /*

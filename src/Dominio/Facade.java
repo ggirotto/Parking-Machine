@@ -10,6 +10,7 @@ public class Facade {
     private /*@ spec_public @*/ /*@ non_null @*/ static LocalDateTime saida;
     private CartaoRecarregavel cartao = null;
     private /*@ spec_public @*/ /*@ non_null @*/ static Facade facade = null;
+    private static double troco;
     
     /*@ requires chegada != null && saida != null;
       @ ensures \result == facade;
@@ -26,15 +27,6 @@ public class Facade {
         Facade.saida = saida;
         return facade;
         
-    }
-    
-    public void voltaPadrao(){
-        cartao = null;
-        tipoPagamento = parquimetro.getCoinCollector();
-    }
-    
-    public void zeraSaldo(){
-        parquimetro.getCoinCollector().zeraSaldo();
     }
     
     /*@ ensures chegada != \old(chegada);
@@ -62,7 +54,7 @@ public class Facade {
       @ signals (PagamentoException e) valorPago <= 0;
     */
     public Ticket geraTicket(double valorPago) throws ParquimetroException, PagamentoException, TicketException{
-        parquimetro.registraPagamento(chegada, saida, valorPago, tipoPagamento);
+        troco = parquimetro.registraPagamento(chegada, saida, valorPago, tipoPagamento);
         return parquimetro.geraTicket(chegada, saida,tipoPagamento,valorPago);
     }
     
@@ -82,5 +74,18 @@ public class Facade {
     */
     public /*@ pure @*/ double getSaldoMaquina(){
         return parquimetro.getCoinCollector().getSaldo();
+    }
+    
+    public /*@ pure @*/ double getTroco(){
+        return troco;
+    }
+    
+    public void voltaPadrao(){
+        cartao = null;
+        tipoPagamento = parquimetro.getCoinCollector();
+    }
+    
+    public void zeraSaldo(){
+        parquimetro.getCoinCollector().zeraSaldo();
     }
 }

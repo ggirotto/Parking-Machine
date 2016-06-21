@@ -15,7 +15,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class ParquimetroTestesComMoedas {
+public class TestesParametrizadosComMoedas {
     
     private static Facade f;
     private final List<Double> moedas;
@@ -29,11 +29,7 @@ public class ParquimetroTestesComMoedas {
             
             Random r = new Random();
             
-            int minuto = r.nextInt(51-0)+0;
-            while(minuto%10 != 0) minuto = r.nextInt(51-0)+0;
-            
-            int tempo = r.nextInt(121-30)+30;
-            while(tempo%10 != 0) tempo = r.nextInt(121-30)+30;
+            int tempo = 30+r.nextInt(10)*10;
             
             List moedas = null;
             
@@ -80,10 +76,21 @@ public class ParquimetroTestesComMoedas {
                     break;
                 
             }
+            
+            int hora = r.nextInt(11)+8;
+            
+            int minuto = r.nextInt(6)*10;
+            
+            
+            if(hora==8)
+                minuto=(r.nextInt(3)+3)*10;
+            else if(hora == 18)
+                minuto=r.nextInt(3)*10;
+            
             LocalDateTime randomData = LocalDateTime.of(r.nextInt(2017-1997)+1997
                                                     ,r.nextInt(13-1)+1
                                                     ,r.nextInt(29-1)+1
-                                                    ,r.nextInt(24-0)+0
+                                                    ,hora
                                                     ,minuto);
             
             retorno.add(new Object[]{randomData ,tempo ,moedas});
@@ -91,7 +98,7 @@ public class ParquimetroTestesComMoedas {
         return retorno;
     }
     
-    public ParquimetroTestesComMoedas(LocalDateTime chegada, int saida, List moedas) {
+    public TestesParametrizadosComMoedas(LocalDateTime chegada, int saida, List moedas) {
         this.f = Facade.getInstance(chegada,chegada.plusMinutes(saida));
         this.moedas = moedas;
     }
@@ -113,8 +120,10 @@ public class ParquimetroTestesComMoedas {
         }
         
         Ticket t = f.geraTicket(cont);
+        double troco = f.getTroco();
+        
         if(t!=null)
-            assertEquals(saldoAnterior+cont,f.getSaldoMaquina(),0.0f);
+            assertEquals(((saldoAnterior+cont)-troco),f.getSaldoMaquina(),0.0f);
     }
     
     public static void geraRelatorio() throws Exception{
