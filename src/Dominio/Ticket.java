@@ -18,9 +18,9 @@ public class Ticket {
         /*
             Verifica se trocou o dia, se sim, zera o número de serial
         */
-        if(!(serialController.equals(LocalDate.now()))){
+        if(!(serialController.equals(newChegada.toLocalDate()))){
             SERIAL_CONT = 0;
-            serialController = LocalDate.now();
+            serialController = newChegada.toLocalDate();
         }
         serial = calculaSerial();
         chegada = newChegada;
