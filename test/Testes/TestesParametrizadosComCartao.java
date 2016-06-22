@@ -17,7 +17,7 @@ import org.junit.runners.Parameterized.Parameters;
 public class TestesParametrizadosComCartao {
     
     private final LocalDateTime saida;
-    private final Facade f;
+    private static Facade f;
     private final double saldo;
     private final double valorNecessario;
     
@@ -102,6 +102,10 @@ public class TestesParametrizadosComCartao {
         if(t!=null && saida.toLocalTime().isBefore(LocalTime.of(18, 30)))
             assertEquals(saldo-valorNecessario,cartao.getSaldo(),0.0f);
         
+    }
+    
+    public static void geraRelatorio() throws Exception{
+        f.geraLogParquimetro();
     }
     
     

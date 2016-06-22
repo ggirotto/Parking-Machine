@@ -7,16 +7,18 @@ import static org.junit.Assert.*;
 
 public class TestesNaoParametrizados {
     
+    private static Facade f;
+    
     @Before
     public void zeraFachada(){
         Facade.getInstance(LocalDateTime.MAX, LocalDateTime.MIN).voltaPadrao();
     }
     
     @Test
-    public void simularInsercaoDasMoedas() throws PagamentoException{
+    public void simularInsercaoDasMoedas() throws PagamentoException, ParquimetroException, TicketException{
         
         LocalDateTime saida = LocalDateTime.now().plusMinutes(30);
-        Facade f = Facade.getInstance(LocalDateTime.now(),saida);
+        f = Facade.getInstance(LocalDateTime.now(),saida);
         
         try{
             f.insereMoeda(0.05);
@@ -28,13 +30,17 @@ public class TestesNaoParametrizados {
             throw e;
         }
         
+        Ticket t = f.geraTicket(1.9);
+        
+        assertNotNull(t);
+        
     }
     
     @Test
     public void simulaInsercaoDoCartao() throws PagamentoException{
         
         LocalDateTime saida = LocalDateTime.now().plusMinutes(30);
-        Facade f = Facade.getInstance(LocalDateTime.now(),saida);
+        f = Facade.getInstance(LocalDateTime.now(),saida);
         
         CartaoRecarregavel card = new CartaoRecarregavel("01234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768");
         f.cartaoInserido(card);
@@ -47,7 +53,7 @@ public class TestesNaoParametrizados {
     public void simulaTempoMinimo() throws PagamentoException, ParquimetroException, TicketException{
         
         LocalDateTime chegada = LocalDateTime.of(2016, 5, 5, 12, 00);
-        Facade f = Facade.getInstance(chegada,chegada.plusMinutes(30));
+        f = Facade.getInstance(chegada,chegada.plusMinutes(30));
         
         double saldoAnterior = f.getSaldoMaquina();
         
@@ -73,7 +79,7 @@ public class TestesNaoParametrizados {
     public void simulaTempoMaximo() throws PagamentoException, ParquimetroException, TicketException{
         
         LocalDateTime chegada = LocalDateTime.of(2016, 5, 5, 12, 00);
-        Facade f = Facade.getInstance(chegada,chegada.plusMinutes(120));
+        f = Facade.getInstance(chegada,chegada.plusMinutes(120));
         
         double saldoAnterior = f.getSaldoMaquina();
         
@@ -99,7 +105,7 @@ public class TestesNaoParametrizados {
     public void simulaTempoIntermediario() throws PagamentoException, ParquimetroException, TicketException{
         
         LocalDateTime chegada = LocalDateTime.of(2016, 5, 5, 12, 00);
-        Facade f = Facade.getInstance(chegada,chegada.plusMinutes(80));
+        f = Facade.getInstance(chegada,chegada.plusMinutes(80));
         
         double saldoAnterior = f.getSaldoMaquina();
         
@@ -123,7 +129,7 @@ public class TestesNaoParametrizados {
     public void simulaSaidaAposFimTarifacao() throws PagamentoException, ParquimetroException, TicketException{
         
         LocalDateTime chegada = LocalDateTime.of(2016, 5, 5, 18, 00);
-        Facade f = Facade.getInstance(chegada,chegada.plusMinutes(50));
+        f = Facade.getInstance(chegada,chegada.plusMinutes(50));
         
         double saldoAnterior = f.getSaldoMaquina();
         
@@ -147,14 +153,16 @@ public class TestesNaoParametrizados {
     public void simulaTempoForaDeTarifacao() throws PagamentoException, ParquimetroException, TicketException{
         
         LocalDateTime chegada = LocalDateTime.of(2016, 5, 5, 19, 00);
-        Facade f = Facade.getInstance(chegada,chegada.plusMinutes(30));
+        f = Facade.getInstance(chegada,chegada.plusMinutes(30));
         
         double saldoAnterior = f.getSaldoMaquina();
         
         double cont = 0;
         
-        f.insereMoeda(1.0);
-        cont+=1;
+        f.insereMoeda(0.25);
+        cont+=0.25;
+        f.insereMoeda(0.25);
+        cont+=0.25;
         f.insereMoeda(0.25);
         cont+=0.25;
         
@@ -171,7 +179,7 @@ public class TestesNaoParametrizados {
     public void simulaTrocoCorreto() throws Exception{
 
         LocalDateTime chegada = LocalDateTime.of(2016, 5, 5, 15, 00);
-        Facade f = Facade.getInstance(chegada,chegada.plusMinutes(30));
+        f = Facade.getInstance(chegada,chegada.plusMinutes(30));
         
         // Adiciona para a máquina possuir moeda para dar de troco
         f.insereMoeda(0.25);
@@ -208,7 +216,7 @@ public class TestesNaoParametrizados {
     public void simulaTrocoComMaquinaSemMoedas() throws Exception{
         
         LocalDateTime chegada = LocalDateTime.of(2016, 5, 5, 15, 00);
-        Facade f = Facade.getInstance(chegada,chegada.plusMinutes(90));
+        f = Facade.getInstance(chegada,chegada.plusMinutes(90));
         f.zeraSaldo();
         
         double saldoAnterior = f.getSaldoMaquina();
@@ -236,7 +244,7 @@ public class TestesNaoParametrizados {
         cartao.deposita(3);
         
         LocalDateTime chegada = LocalDateTime.of(2016, 5, 5, 15, 00);
-        Facade f = Facade.getInstance(chegada,chegada.plusMinutes(120));
+        f = Facade.getInstance(chegada,chegada.plusMinutes(120));
         
         f.cartaoInserido(cartao);
         Ticket t = f.geraTicket(3);
@@ -253,7 +261,7 @@ public class TestesNaoParametrizados {
         cartao.deposita(10);
         
         LocalDateTime chegada = LocalDateTime.of(2016, 5, 5, 15, 00);
-        Facade f = Facade.getInstance(chegada,chegada.plusMinutes(120));
+        f = Facade.getInstance(chegada,chegada.plusMinutes(120));
         
         f.cartaoInserido(cartao);
         Ticket t = f.geraTicket(3);
@@ -262,6 +270,10 @@ public class TestesNaoParametrizados {
         assertEquals(7.0f,cartao.getSaldo(),0.0f);
         //f.geraLogParquimetro();
         
+    }
+    
+    public static void geraRelatorio() throws Exception{
+        f.geraLogParquimetro();
     }
     
     
