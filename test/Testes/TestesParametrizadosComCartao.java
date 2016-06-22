@@ -57,9 +57,20 @@ public class TestesParametrizadosComCartao {
             else if(hora == 18)
                 minuto=r.nextInt(3)*10;
             
-            LocalDateTime randomData = LocalDateTime.of(r.nextInt(2017-1997)+1997
-                                                    ,r.nextInt(13-1)+1
-                                                    ,r.nextInt(29-1)+1
+            int mes = r.nextInt(13-1)+1;
+            
+            int ano = r.nextInt(2017-1997)+1997;
+            
+            int dia;
+            
+            if(mes == 2 && ano%4==0) dia = r.nextInt(30-1)+1;
+            else if(mes == 2 && ano%4!=0) dia = r.nextInt(29-1)+1;
+            else if(mes == 4 || mes == 6 || mes == 9 || mes == 11) dia = r.nextInt(31-1)+1;
+            else dia = r.nextInt(32-1)+1;
+            
+            LocalDateTime randomData = LocalDateTime.of(ano
+                                                    ,mes
+                                                    ,dia
                                                     ,hora
                                                     ,minuto);
             
@@ -84,7 +95,6 @@ public class TestesParametrizadosComCartao {
     @Test
     public void TesteComCartao() throws PagamentoException, ParquimetroException, TicketException{
         
-        System.out.println("Saldo: "+saldo+" - Valor: "+valorNecessario);
         CartaoRecarregavel cartao = new CartaoRecarregavel("01234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768");
         cartao.deposita(saldo);
         f.cartaoInserido(cartao);

@@ -64,28 +64,31 @@ public class Facade {
     
     /*@ requires valor == 0.05 ||  valor == 0.1 ||  valor == 0.25 ||  valor == 0.5 ||  valor == 1.0;
       @ ensures tipoPagamento.getSaldo() == \old(tipoPagamento.getSaldo())+valor;
-    */
+    @*/
     public void insereMoeda(double valor) throws PagamentoException{
         parquimetro.inserirMoeda(chegada,valor);
     }
+
     
-    /*@ requires tipoPagamento.getTipo() == "Pagamento em moedas";
-      @ ensures \result == tipoPagamento.getSaldo();
-    */
-    public /*@ pure @*/ double getSaldoMaquina(){
-        return parquimetro.getCoinCollector().getSaldo();
-    }
-    
-    public /*@ pure @*/ double getTroco(){
-        return troco;
-    }
-    
+    /*@ ensures cartao == null;
+      @ ensures tipoPagamento.getTipo().equals("Pagamento em moedas");
+    @*/
     public void voltaPadrao(){
         cartao = null;
         tipoPagamento = parquimetro.getCoinCollector();
     }
     
+    /*@ ensures tipoPagamento.getSaldo() == 0;
+    @*/
     public void zeraSaldo(){
         parquimetro.getCoinCollector().zeraSaldo();
     }
+    
+    //Getters
+    public /*@ pure @*/ CartaoRecarregavel getCartao(){ return cartao; }
+    public /*@ pure @*/ double getTroco(){ return troco; }
+    /*@ requires tipoPagamento.getTipo() == "Pagamento em moedas";
+      @ ensures \result == tipoPagamento.getSaldo();
+    @*/
+    public /*@ pure @*/ double getSaldoMaquina(){ return parquimetro.getCoinCollector().getSaldo(); }
 }

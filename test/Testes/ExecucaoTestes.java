@@ -11,7 +11,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({TestesParametrizadosComMoedas.class, TestesParametrizadosComCartao.class })
+@SuiteClasses({TestesParametrizadosComMoedas.class, TestesParametrizadosComCartao.class, TestesNaoParametrizados.class })
 public class ExecucaoTestes {
     
     @AfterClass
