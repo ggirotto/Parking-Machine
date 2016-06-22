@@ -35,7 +35,7 @@ public class RelatorioDAODTOStore implements RelatorioDAO, Serializable{
         ObjectOutputStream out = null;
         try {
             out = new ObjectOutputStream(new
-            BufferedOutputStream(new FileOutputStream("listaTickets.bin")));
+            BufferedOutputStream(new FileOutputStream("00001-tickets.bin")));
             out.writeObject(listaTickets);
         } finally {
             out.close();
